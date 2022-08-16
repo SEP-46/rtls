@@ -366,7 +366,12 @@ Serial::SerialImpl::setPort (const string &port)
 string
 Serial::SerialImpl::getPort () const
 {
-  return string(port_.begin(), port_.end());
+  std::string port;
+  port.reserve(port_.size());
+  for (wchar_t c : port_) {
+    port.push_back((char)c);
+  }
+  return port;
 }
 
 void
