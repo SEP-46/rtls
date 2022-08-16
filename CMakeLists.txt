@@ -12,8 +12,12 @@ if( MSVC )
     add_definitions(-D_CRT_SECURE_NO_WARNINGS) # Disable warning about scanf
 endif()
 
+add_subdirectory(thirdparty/serial)
+
 set(SRCS
     src/main.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SRCS})
+
+target_link_libraries(${PROJECT_NAME} serial)
