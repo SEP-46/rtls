@@ -17,6 +17,8 @@ add_subdirectory(thirdparty/dwm)
 
 set(SRCS
     src/main.cpp
+    src/rtls.cpp
+    src/rtls.h
     src/trilaterationsolver.h
     src/trilaterationsolver_basic.cpp
     src/trilaterationsolver_basic.h
