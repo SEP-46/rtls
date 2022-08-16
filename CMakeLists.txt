@@ -13,6 +13,7 @@ if( MSVC )
 endif()
 
 add_subdirectory(thirdparty/serial)
+add_subdirectory(thirdparty/dwm)
 
 set(SRCS
     src/main.cpp
@@ -21,3 +22,4 @@ set(SRCS
 add_executable(${PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${PROJECT_NAME} serial)
+target_link_libraries(${PROJECT_NAME} dwm)
