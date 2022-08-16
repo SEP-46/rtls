@@ -16,6 +16,7 @@ add_subdirectory(thirdparty/serial)
 add_subdirectory(thirdparty/dwm)
 
 set(SRCS
+    src/lmh_serial.cpp
     src/main.cpp
     src/rtls.cpp
     src/rtls.h
