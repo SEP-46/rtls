@@ -17,6 +17,7 @@ add_subdirectory(thirdparty/dwm)
 
 set(SRCS
     src/main.cpp
+    src/vector.h
 )
 
 add_executable(${PROJECT_NAME} ${SRCS})
