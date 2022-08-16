@@ -3,8 +3,8 @@ project(rtls)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib) # Output directory for static lib (.lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin) # Output directory for shared lib (.dll)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib) # Output directory for static lib (.lib/.a)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin) # Output directory for shared lib (.dll/.so)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin) # Output directory for executables (.exe)
 
 if( MSVC )
@@ -15,18 +15,13 @@ endif()
 add_subdirectory(thirdparty/serial)
 add_subdirectory(thirdparty/dwm)
 
-set(SRCS
-    src/lmh_serial.cpp
-    src/main.cpp
-    src/rtls.cpp
-    src/rtls.h
-    src/trilaterationsolver.h
-    src/trilaterationsolver_basic.cpp
-    src/trilaterationsolver_basic.h
-    src/vector.h
-)
+add_subdirectory(src)
 
-add_executable(${PROJECT_NAME} ${SRCS})
-
-target_link_libraries(${PROJECT_NAME} serial)
-target_link_libraries(${PROJECT_NAME} dwm)
+option(PACKAGE_TESTS "Build the tests" ON)
+if(PACKAGE_TESTS)
+    enable_testing()
+    include(GoogleTest) # Include the GoogleTest module to enable gtest_discover_tests()
+    set(gtest_force_shared_crt ON)
+    add_subdirectory(thirdparty/googletest)
+    add_subdirectory(tests)
+endif()
