@@ -6,37 +6,40 @@
 RTLS::RTLS()
 {
 	mTrilaterationSolver = std::make_unique<TrilaterationSolver_Basic>();
-
-	// Create 3 anchors, 1 along each axis
-	mAnchors[0] = { 1.0f, 0.0f, 0.0f };
-	mAnchors[1] = { 0.0f, 1.0f, 0.0f };
-	mAnchors[2] = { 0.0f, 0.0f, 1.0f };
-
-	// Start with tag at origin
-	mTagPosition = { 0.0f, 0.0f, 0.0f };
 }
 
 bool RTLS::Run()
 {
-	const float dt = 1.0f / 60.0f; // Delta time, advance by 1/60th of a second
+	if ( !mTag.UpdateDistanceData() )
+		return true;
 
-	// Move tag in circular path
-	mTagPosition.x = sinf( dt );
-	mTagPosition.y = cosf( dt );
+	Vec3 anchorPositions[MAX_ANCHORS];
+	float anchorDistances[MAX_ANCHORS];
+	size_t numAnchors = mTag.CollectAnchorPositionsAndDistances( anchorPositions, anchorDistances );
 
-	float distances[3];
-	for ( int i = 0; i < 3; i++ )
+	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( anchorPositions, anchorDistances, numAnchors );
+	if ( !result.SolutionFound() )
 	{
-		distances[i] = Vec3::Distance( mAnchors[i], mTagPosition );
+		std::cout << "Failed to find tag position!\n";
+		std::cout << "Anchors:\n";
+		for ( size_t i = 0; i < numAnchors; i++ )
+		{
+			std::cout << "\t{ " << anchorPositions[i].x << ", " << anchorPositions[i].y << ", " << anchorPositions->z << " }\n";
+		}
+		std::cout << "Distances:\n";
+		for ( size_t i = 0; i < numAnchors; i++ )
+		{
+			std::cout << "\t" << anchorDistances[i] << "m\n";
+		}
 	}
-
-	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( mAnchors, distances, 3 );
-
-	const Vec3* solution = result.FindClosestSolution( mTagPosition );
-	if ( !solution || !Vec3::CloseEnough( *solution, mTagPosition ) )
+	else
 	{
-		std::cerr << "Trilateration solver failed to find tag location!\n";
-		return false;
+		std::cout << "Tag possible positions:\n";
+		for ( size_t i = 0; i < result.NumPossibleTagPositions(); i++ )
+		{
+			const Vec3& pos = result.GetPossibleTagPosition( i );
+			std::cout << "\t{ " << pos.x << ", " << pos.y << ", " << pos.z << " }\n";
+		}
 	}
 
 	return true;
