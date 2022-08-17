@@ -1,4 +1,5 @@
 set(TESTS
+    uwb_anchor_test.cpp
     vector_test.cpp
 )
 
