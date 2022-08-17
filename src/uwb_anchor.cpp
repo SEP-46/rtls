@@ -1,0 +1,39 @@
+#include "uwb_anchor.h"
+
+UWBAnchor& UWBAnchorList::AddAnchor( UWBAnchorId_t id )
+{
+	assert( mNumAnchors < MAX_ANCHORS );
+
+	UWBAnchor& anchor = mAnchors[mNumAnchors++];
+	anchor = UWBAnchor( id );
+
+	return anchor;
+}
+
+void UWBAnchorList::RemoveAnchorByIndex( size_t index )
+{
+	assert( mNumAnchors > 0 );
+	assert( index < mNumAnchors );
+	mAnchors[index] = mAnchors[mNumAnchors - 1];
+	mNumAnchors--;
+}
+
+int UWBAnchorList::FindAnchorIndexById( UWBAnchorId_t id )
+{
+	for ( size_t i = 0; i < mNumAnchors; i++ )
+	{
+		if ( mAnchors[i].GetId() == id )
+			return (int)i;
+	}
+	return -1;
+}
+
+UWBAnchor* UWBAnchorList::FindAnchorById( UWBAnchorId_t id )
+{
+	for ( size_t i = 0; i < mNumAnchors; i++ )
+	{
+		if ( mAnchors[i].GetId() == id )
+			return &mAnchors[i];
+	}
+	return nullptr;
+}

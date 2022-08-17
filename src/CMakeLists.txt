@@ -5,6 +5,10 @@ set(SRCS
     trilaterationsolver.h
     trilaterationsolver_basic.cpp
     trilaterationsolver_basic.h
+    uwb_anchor.cpp
+    uwb_anchor.h
+    uwb_tag.cpp
+    uwb_tag.h
     vector.h
 )
 

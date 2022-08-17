@@ -1,6 +1,7 @@
 #pragma once
 
 #include "trilaterationsolver.h"
+#include "uwb_tag.h"
 #include <memory>
 
 class RTLS
@@ -12,7 +13,6 @@ public:
 	bool Run();
 
 private:
+	UWBTag mTag;
 	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
-	Vec3 mAnchors[3];
-	Vec3 mTagPosition;
 };
