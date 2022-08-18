@@ -1,10 +1,13 @@
 set(SRCS
     lmh_serial.cpp
+    mathlib.h
     rtls.cpp
     rtls.h
     trilaterationsolver.h
     trilaterationsolver_basic.cpp
     trilaterationsolver_basic.h
+    util.cpp
+    util.h
     uwb_anchor.cpp
     uwb_anchor.h
     uwb_tag.cpp

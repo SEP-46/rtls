@@ -1,7 +1,9 @@
 #include "uwb_tag.h"
 
+#include "util.h"
 #include <dwm_api.h>
 #include <cassert>
+#include <chrono>
 
 UWBTag::UWBTag()
 {
@@ -26,7 +28,9 @@ bool UWBTag::UpdateDistanceData()
 	assert( ret == RV_OK );
 	assert( loc.anchors.dist.cnt == loc.anchors.an_pos.cnt );
 
-	bool anchorUpdated[MAX_ANCHORS] = {};
+	int64_t timestamp = Util_GetCurrentTime();
+
+	bool anchorConnected[MAX_ANCHORS] = {};
 
 	for ( uint8_t i = 0; i < loc.anchors.dist.cnt; i++ )
 	{
@@ -53,6 +57,12 @@ bool UWBTag::UpdateDistanceData()
 
 		// DWM API gives us measurements in millimetre integers
 		// We deal in metres, so need to do conversion by dividing by 1000
+		float anchorDistMm = (float)loc.anchors.dist.dist[i];
+
+		anchor->SetLastUpdatedTimestamp( timestamp );
+
+		anchor->SetDistance( anchorDistMm / 1000.0f );
+
 		Vec3 anchorPosMm = {
 			(float)loc.anchors.an_pos.pos[i].x,
 			(float)loc.anchors.an_pos.pos[i].y,
@@ -60,8 +70,8 @@ bool UWBTag::UpdateDistanceData()
 		};
 		anchor->SetPosition( anchorPosMm / 1000.0f );
 
-		float anchorDistMm = (float)loc.anchors.dist.dist[i];
-		anchor->SetDistance( anchorDistMm / 1000.0f );
+		float anchorDistQf = (float)loc.anchors.dist.qf[i];
+		anchor->SetDistanceQualityFactor( anchorDistQf );
 	}
 
 	// Remove anchors that we are no longer connected to
