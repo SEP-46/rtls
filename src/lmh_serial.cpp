@@ -22,6 +22,7 @@ static constexpr char* DEVICE_STRS[] = {
 	// For DWM1001
 	"CDC",
 	"Communications Port",
+	"JLink CDC UART Port"
 };
 
 /**
