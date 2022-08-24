@@ -6,16 +6,16 @@
 class VelocityOutputData
 {
 public:
-	void CalcVelocity(Vec3 aLoc, int32_t aNewTimestamp);
-	int32_t GetSpeed();
-	int32_t* GetDirection();
-	void TestPrintVelocity();
+	void CalcVelocity(const Vec3 & aLoc, const int64_t & aNewTimestamp);
+	float GetSpeed() const;
+	float* GetDirection() const;
+	void TestPrintVelocity() const;
 private:
 	Vec3 mOldPos = { 0,0,0 };			// {x,y,z}
 	Vec3 mDistance = { 0,0,0 };			// {dx,dy,dz}
 	//Vec3 mSpeedVec3 = { 0,0,0 };		// {x',y',z'} - Not sure if needed
-	int32_t mSpeedMag = 0;				// total speed (magnitude)
-	int32_t mDirection[2] = { 0,0 };	// {theta,phi}
-	int32_t mOldTimestamp = 0;			// milliseconds?
+	float mSpeedMag = 0;				// total speed (magnitude)
+	float mDirection[2] = { 0,0 };		// {theta,phi}
+	float mOldTimestamp = 0;			// milliseconds?
 };
 
