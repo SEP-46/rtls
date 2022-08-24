@@ -28,7 +28,7 @@ bool UWBTag::UpdateDistanceData()
 	assert( ret == RV_OK );
 	assert( loc.anchors.dist.cnt == loc.anchors.an_pos.cnt );
 
-	int64_t timestamp = Util_GetCurrentTime();
+	Timestamp_t timestamp = Util_GetCurrentTime();
 
 	bool anchorConnected[MAX_ANCHORS] = {};
 
