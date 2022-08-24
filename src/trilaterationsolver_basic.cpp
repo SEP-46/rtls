@@ -34,16 +34,28 @@ TrilaterationResult TrilaterationSolver_Basic::FindTagPosition(
 	float c = Lp.LengthSq() + P[0].LengthSq() - 2 * Vec3::Dot( P[0], Lp ) - D[0]*D[0];
 
 	float discriminant = b*b - 4*a*c;;
-	if ( discriminant < 0 )
-		return {}; // No real solutions, the spheres don't intersect
+	if ( discriminant == 0 )
+	{
+		// Spheres only intersect in 1 point, so there is only 1 solution
+		float t = ( -b + sqrtf( discriminant ) ) / ( 2 * a );
+		return TrilaterationResult( { Lp + Ld * t } );
+	}
+	else if ( discriminant > 0 )
+	{
+		// Spheres intersect in 2 points, 2 possible solutions
+		float t1 = ( -b + sqrtf( discriminant ) ) / ( 2 * a );
+		float t2 = ( -b - sqrtf( discriminant ) ) / ( 2 * a );
 
-	float t1 = ( -b + sqrtf( discriminant ) ) / (2 * a);
-	float t2 = ( -b - sqrtf( discriminant ) ) / (2 * a);
-	
-	std::vector<Vec3> result = {
-		Lp + Ld * t1,
-		Lp + Ld * t2
-	};
-
-	return TrilaterationResult( std::move( result ) );
+		return TrilaterationResult( {
+			Lp + Ld * t1,
+			Lp + Ld * t2
+		} );
+	}
+	else
+	{
+		// Spheres don't intersect at all
+		// An estimate solution can still be formed by ignoring the complex part of the equation
+		float t = ( -b ) / ( 2 * a );
+		return TrilaterationResult( { Lp + Ld * t } );
+	}
 }
