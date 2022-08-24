@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vector.h"
+#include "util.h"
 #include <cassert>
 #include <cstdint>
 
@@ -32,15 +33,15 @@ public:
 	float GetDistanceQualityFactor() const { return mDistanceQualityFactor; }
 	void SetDistanceQualityFactor( float distanceQualityFactor ) { mDistanceQualityFactor = distanceQualityFactor; }
 
-	int64_t GetLastUpdatedTimestamp() const { return mLastUpdateTimestamp; }
-	void SetLastUpdatedTimestamp( int64_t timestamp ) { mLastUpdateTimestamp = timestamp; }
+	Timestamp_t GetLastUpdatedTimestamp() const { return mLastUpdateTimestamp; }
+	void SetLastUpdatedTimestamp( Timestamp_t timestamp ) { mLastUpdateTimestamp = timestamp; }
 
 private:
 	UWBAnchorId_t mId = UWB_ANCHOR_ID_INVALID;
 	Vec3 mPosition = { 0.0f, 0.0f, 0.0f };
 	float mDistance = 0.0f;
 	float mDistanceQualityFactor = 0.0f;
-	int64_t mLastUpdateTimestamp = 0;
+	Timestamp_t mLastUpdateTimestamp = 0;
 };
 
 // Helper class to keep track of connected anchors
