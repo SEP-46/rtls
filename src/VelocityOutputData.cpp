@@ -1,19 +1,23 @@
 #include "VelocityOutputData.h"
 
-void VelocityOutputData::CalcVelocity(const Vec3& aLoc, int64_t aNewTimestamp)
+void VelocityOutputData::CalcVelocity(const Vec3& aLoc, Timestamp_t aNewTimestamp)
 {
 	// Calculating distance from position data
-	mDistance = aLoc - mOldPos;
+	Vec3 delta = aLoc - mOldPos;
+	float distance = delta.Length();
 	mOldPos = aLoc;
 
+	// Timestamp is given in milliseconds, but to calculate speed in m/s we need seconds
+	float timestampSeconds = aNewTimestamp / 1000.0f;
+
 	// Speed (total magnitude)
-	mSpeedMag = (mDistance / (aNewTimestamp - mOldTimestamp)).Length();
-	mOldTimestamp = aNewTimestamp;
+	mSpeedMag = distance / ( timestampSeconds - mOldTimestampSeconds );
+	mOldTimestampSeconds = timestampSeconds;
 
 	// Direction {theta, phi}
-	float r = mDistance.Length();
-	mDirection.theta = atan2(mDistance.y, mDistance.x);
-	mDirection.phi = acos(mDistance.z/r);
+	float r = distance;
+	mDirection.theta = atan2(delta.y, delta.x);
+	mDirection.phi = acos(delta.z/r);
 }
 
 float VelocityOutputData::GetSpeed() const
