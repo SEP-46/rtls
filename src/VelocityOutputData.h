@@ -2,13 +2,8 @@
 
 #include "vector.h"
 #include "util.h"
+#include "mathlib.h"
 #include <chrono>
-
-struct SphereAngles
-{
-	float theta = 0.0;
-	float phi = 0.0;
-};
 
 class VelocityOutputData
 {
@@ -21,7 +16,7 @@ private:
 	Vec3 mOldPos = { 0,0,0 };			// {x,y,z}
 	//Vec3 mSpeedVec3 = { 0,0,0 };		// {x',y',z'} - Not sure if needed
 	float mSpeedMag = 0;				// total speed (magnitude)
-	SphereAngles mDirection;					// float theta, float phi
+	SphereAngles mDirection = { 0.0f, 0.0f };					// float theta, float phi
 	float mOldTimestampSeconds = 0;
 };
 
