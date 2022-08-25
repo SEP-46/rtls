@@ -40,7 +40,7 @@ void LMH_Init()
 	g_serial.setStopbits( serial::stopbits_one );
 	g_serial.setFlowcontrol( serial::flowcontrol_none );
 
-	auto timeout = serial::Timeout::simpleTimeout( 1000 );
+	auto timeout = serial::Timeout::simpleTimeout( 100 );
 	g_serial.setTimeout( timeout );
 
 	std::string evb_port;
