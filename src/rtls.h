@@ -1,6 +1,7 @@
 #pragma once
 
 #include "trilaterationsolver.h"
+#include "VelocityOutputData.h"
 #include "uwb_tag.h"
 #include <memory>
 
