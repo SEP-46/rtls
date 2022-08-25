@@ -16,4 +16,5 @@ public:
 private:
 	UWBTag mTag;
 	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
+	VelocityOutputData mVelocityOutputData;
 };
