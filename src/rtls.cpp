@@ -2,6 +2,7 @@
 
 #include "trilaterationsolver_basic.h"
 #include <iostream>
+#include "uart_interface.h"
 
 RTLS::RTLS()
 {
@@ -10,6 +11,11 @@ RTLS::RTLS()
 
 bool RTLS::Run()
 {
+	Vec3 pos = { 1.0f, 2.0f, 3.0f };
+
+	UartInterface uart( 0 );
+	uart.Write( &pos, sizeof( pos ) );
+
 	if ( !mTag.UpdateDistanceData() )
 		return true;
 
