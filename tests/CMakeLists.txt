@@ -2,6 +2,7 @@ set(TESTS
     trilaterationbasic_test.cpp
     uwb_anchor_test.cpp
     vector_test.cpp
+	velocity_test.cpp
 )
 
 add_executable(rtls-tests ${TESTS})
