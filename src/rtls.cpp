@@ -41,6 +41,10 @@ bool RTLS::Run()
 			const Vec3& pos = result.GetPossibleTagPosition( i );
 			std::cout << "\t{ " << pos.x << ", " << pos.y << ", " << pos.z << " }\n";
 		}
+
+		const Vec3& pos = result.GetPossibleTagPosition( 0 );
+		mVelocityOutputData.CalcVelocity( pos, Util_GetCurrentTime() );
+		mVelocityOutputData.TestPrintVelocity();
 	}
 
 	return true;

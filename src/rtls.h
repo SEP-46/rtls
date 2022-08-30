@@ -1,6 +1,7 @@
 #pragma once
 
 #include "trilaterationsolver.h"
+#include "VelocityOutputData.h"
 #include "uwb_tag.h"
 #include <memory>
 
@@ -15,4 +16,5 @@ public:
 private:
 	UWBTag mTag;
 	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
+	VelocityOutputData mVelocityOutputData;
 };
