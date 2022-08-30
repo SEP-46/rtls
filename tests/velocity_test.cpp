@@ -15,7 +15,7 @@ TEST(VelocityTest, CanGetSpeed)
 	EXPECT_FLOAT_EQ(testOutputData.GetSpeed(),(sqrtf(powf(6.3f-1.2f,2)+powf(4.2f - 2.4f, 2)+powf(2.1f - 3.6f, 2)))/(8.642f-4.321f));
 }
 
-TEST(VelocityTest, CanGetirection)
+TEST(VelocityTest, CanGetDirection)
 {
 	VelocityOutputData testOutputData;
 	Vec3 testLoc1 = { 1.2f, 2.4f, 3.6f };

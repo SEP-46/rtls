@@ -1,4 +1,4 @@
-#include "VelocityOutputData.h"
+#include "velocity_output.h"
 
 void VelocityOutputData::CalcVelocity(const Vec3& aLoc, Timestamp_t aNewTimestamp)
 {
