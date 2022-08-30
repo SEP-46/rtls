@@ -20,10 +20,10 @@ UartInterface::UartInterface( int port )
 
 int UartInterface::Read( void* data, int length )
 {
-	return gSerial.read( (uint8_t*)data, length );
+	return (int)gSerial.read( (uint8_t*)data, length );
 }
 
 int UartInterface::Write( const void* data, int length )
 {
-	return gSerial.write( (const uint8_t*)data, length );
+	return (int)gSerial.write( (const uint8_t*)data, length );
 }

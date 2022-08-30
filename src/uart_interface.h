@@ -9,5 +9,5 @@ public:
 
 	virtual int Read( void* data, int length ) override;
 
-	virtual int Write( const void* data, int length = 0 ) override;
+	virtual int Write( const void* data, int length ) override;
 };
