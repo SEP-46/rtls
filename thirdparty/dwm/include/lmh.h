@@ -29,6 +29,27 @@
 extern "C" {
 #endif
 
+typedef void (*lmh_init_t)(void);
+typedef void (*lmh_deinit_t)(void);
+typedef int (*lmh_tx_t)(uint8_t* data, uint8_t* length);
+typedef int (*lmh_rx_t)(uint8_t* data, uint16_t* length, uint16_t exp_length);
+
+typedef struct {
+   lmh_init_t init;
+   lmh_deinit_t deinit;
+   lmh_tx_t tx;
+   lmh_rx_t rx;
+} lmh_impl_t;
+
+/** 
+ * @brief Sets the implementation of LMH. Must be called before Init.
+ *
+ * @param[in] p_impl Pointer to structure that contains implementation for TX/RX functions
+ *
+ * @return none
+ */
+void LMH_SetImpl(lmh_impl_t* p_impl);
+
 /** 
  * @brief initializes the LMH utilities over defined interface
  *
@@ -83,7 +104,7 @@ int  LMH_WaitForRx(uint8_t* data, uint16_t* length, uint16_t exp_length);
  *
  * @return Error code
  */
-inline int LMH_CheckGPIOIdx(dwm_gpio_idx_t idx)
+static inline int LMH_CheckGPIOIdx(dwm_gpio_idx_t idx)
 {
    if((idx == 2 ) || (idx == 8 ) || (idx == 9 ) || (idx == 10) || (idx == 12)  \
    || (idx == 13) || (idx == 14) || (idx == 15) || (idx == 22) || (idx == 23)  \
@@ -108,7 +129,7 @@ inline int LMH_CheckGPIOIdx(dwm_gpio_idx_t idx)
  *
  * @return Error code
  */
-inline int LMH_CheckRetVal(uint8_t* ret_val)
+static inline int LMH_CheckRetVal(uint8_t* ret_val)
 {
    if(ret_val[0] != DWM1001_TLV_TYPE_RET_VAL)
    {

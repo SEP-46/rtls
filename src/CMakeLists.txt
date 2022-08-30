@@ -1,6 +1,7 @@
 set(SRCS
     communication_interface.h
     lmh_serial.cpp
+    lmh_serial.h
     mathlib.h
     rtls.cpp
     rtls.h
