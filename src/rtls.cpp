@@ -11,12 +11,6 @@ RTLS::RTLS()
 
 bool RTLS::Run()
 {
-	Vec3 pos = { 1.0f, 2.0f, 3.0f };
-
-	//UartInterface uart( 0 );		//hardcoded data
-	UartInterface uart( pos );
-	uart.Write( &pos, sizeof( pos ) );
-
 	if ( !mTag.UpdateDistanceData() )
 		return true;
 
