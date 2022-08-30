@@ -2,6 +2,7 @@
 
 #include "trilaterationsolver_basic.h"
 #include <iostream>
+#include "uart_interface.h"
 
 RTLS::RTLS()
 {

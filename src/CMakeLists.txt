@@ -1,4 +1,5 @@
 set(SRCS
+    communication_interface.h
     lmh_serial.cpp
     mathlib.h
     rtls.cpp
@@ -6,6 +7,8 @@ set(SRCS
     trilaterationsolver.h
     trilaterationsolver_basic.cpp
     trilaterationsolver_basic.h
+    uart_interface.cpp
+    uart_interface.h
     util.cpp
     util.h
     uwb_anchor.cpp
