@@ -16,8 +16,8 @@ set(SRCS
     uwb_tag.cpp
     uwb_tag.h
     vector.h
-    VelocityOutputData.h
-    VelocityOutputData.cpp
+    velocity_output.h
+    velocity_output.cpp
 )
 
 add_library(${PROJECT_NAME} ${SRCS})

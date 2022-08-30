@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "VelocityOutputData.h"
+#include "velocity_output.h"
 
 TEST(VelocityTest, CanGetSpeed)
 {
@@ -22,8 +22,6 @@ TEST(VelocityTest, CanGetDirection)
 	Timestamp_t testTime1 = 4321;
 
 	testOutputData.CalcVelocity(testLoc1, testTime1);
-
-
 
 	EXPECT_FLOAT_EQ(testOutputData.GetDirection().theta, atan2(2.4f, 1.2f));
 	EXPECT_FLOAT_EQ(testOutputData.GetDirection().phi, acos(3.6f / sqrtf(powf(1.2f, 2) + powf(2.4f, 2) + powf(3.6f, 2))));
