@@ -1,5 +1,6 @@
 #include "uwb_tag.h"
 
+#include "lmh_serial.h"
 #include "util.h"
 #include <dwm_api.h>
 #include <cassert>
@@ -7,6 +8,7 @@
 
 UWBTag::UWBTag()
 {
+	LMH_SetImpl( LMH_Serial_GetImpl() );
 	dwm_init();
 }
 

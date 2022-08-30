@@ -4,6 +4,7 @@ project(dwm)
 ## Sources
 set(dwm_SRCS
     src/dwm_api.c
+    src/lmh.c
     include/dwm_api.h
     include/dwm1001_tlv.h
     include/lmh.h

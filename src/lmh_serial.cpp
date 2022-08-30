@@ -1,13 +1,4 @@
-#include <lmh.h>
-
-//
-// LMH is the Low-level Module Handshake API, it allows communicating with the DWM1001
-// over an abstract interface. In the original examples, this was implemented using
-// the Raspberry Pi HAL API, which isn't very portable.
-// 
-// This file instead implements the LMH interface by using the serial library, which
-// works on various different platforms, including Windows/Linux.
-//
+#include "lmh_serial.h"
 
 #include <serial/serial.h>
 
@@ -32,7 +23,7 @@ static const char* DEVICE_STRS[] = {
  *
  * @return none
  */
-void LMH_Init()
+static void LMH_Serial_Init()
 {
 	g_serial.setBaudrate( 115200 );
 	g_serial.setBytesize( serial::eightbits );
@@ -78,7 +69,7 @@ void LMH_Init()
  *
  * @return none
  */
-void LMH_DeInit( void )
+static void LMH_Serial_DeInit( void )
 {
 	g_serial.close();
 }
@@ -91,7 +82,7 @@ void LMH_DeInit( void )
  *
  * @return Error code
  */
-int  LMH_Tx( uint8_t* data, uint8_t* length )
+static int LMH_Serial_Tx( uint8_t* data, uint8_t* length )
 {
 	size_t tx_length = *length;
 	size_t written = g_serial.write( data, tx_length );
@@ -114,8 +105,20 @@ int  LMH_Tx( uint8_t* data, uint8_t* length )
  *
  * @return Error code
  */
-int  LMH_WaitForRx( uint8_t* data, uint16_t* length, uint16_t exp_length )
+static int LMH_Serial_WaitForRx( uint8_t* data, uint16_t* length, uint16_t exp_length )
 {
 	*length = (uint16_t)g_serial.read( data, (size_t)exp_length );
 	return LMH_OK;
+}
+
+static lmh_impl_t gImpl = {
+	LMH_Serial_Init,
+	LMH_Serial_DeInit,
+	LMH_Serial_Tx,
+	LMH_Serial_WaitForRx
+};
+
+lmh_impl_t* LMH_Serial_GetImpl()
+{
+	return &gImpl;
 }
