@@ -1,5 +1,6 @@
 # build directory
 build/
+build_linux/
 
 # User-specific files
 *.rsuser
