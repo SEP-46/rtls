@@ -1,5 +1,7 @@
 #include "velocity_output.h"
 
+#include <iostream>
+
 void VelocityOutputData::CalcVelocity(const Vec3& aLoc, Timestamp_t aNewTimestamp)
 {
 	// Calculating distance from position data
@@ -31,6 +33,6 @@ SphereAngles VelocityOutputData::GetDirection() const
 
 void VelocityOutputData::TestPrintVelocity() const
 {
-	printf("\nSpeed: (%f)\n", mSpeedMag);
-	printf("Direction: (%f,%f)\n", mDirection.theta, mDirection.phi);
+	std::cout << "\nSpeed: (" << mSpeedMag << ")";
+	std::cout << "\nDirection: (" << mDirection.theta << "," << mDirection.phi << ")\n";
 }

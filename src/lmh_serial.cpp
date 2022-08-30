@@ -13,7 +13,7 @@
 
 static serial::Serial g_serial;
 
-static constexpr char* DEVICE_STRS[] = {
+static const char* DEVICE_STRS[] = {
 	// For EVB1000
 	"STMicroelectronics Virtual COM Port", // STM USB driver
 	"USB Serial Device", // Default Windows 10 driver

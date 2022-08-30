@@ -4,6 +4,7 @@
 // <vector> is the stdlib include which has the std::vector class (dynamically resizable array)
 #include "vector.h"
 #include <vector>
+#include <cfloat>
 
 class TrilaterationResult
 {
