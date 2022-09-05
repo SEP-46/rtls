@@ -17,6 +17,10 @@ add_subdirectory(thirdparty/dwm)
 add_subdirectory(thirdparty/ixwebsocket)
 add_subdirectory(thirdparty/abelectronics)
 
+if(NOT MSVC)
+    add_subdirectory(thirdparty/abelectronics) # Linux dependent
+endif()
+
 add_subdirectory(src)
 
 option(PACKAGE_TESTS "Build the tests" ON)

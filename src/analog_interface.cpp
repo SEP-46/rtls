@@ -1,18 +1,41 @@
 #include "analog_interface.h"
-#include <abelectronics/ABE_ADCDACPi.h>
 
-
+#ifdef WIN32
+// Microsoft specific code
+// ...
 AnalogInterface::AnalogInterface()
 {
 
 }
 
-int AnalogInterface::Read( void* data, int length )
+int AnalogInterface::Read(Vec3* data)
+{
+	return 0;
+}
+
+int AnalogInterface::Write(const Vec3& data)
+{
+	return 0;
+}
+#else
+// Linux specific code
+// ...
+#include <ABE_ADCDACPi.h>
+AnalogInterface::AnalogInterface()
 {
 
 }
 
-int AnalogInterface::Write( const void* data, int length )
+int AnalogInterface::Read(Vec3* data)
 {
-
+	return 0;
 }
+
+int AnalogInterface::Write(const Vec3& data)
+{
+	return 0;
+}
+#endif
+
+
+

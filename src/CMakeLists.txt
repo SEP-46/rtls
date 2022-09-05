@@ -39,3 +39,7 @@ target_link_libraries(${PROJECT_NAME} serial)
 target_link_libraries(${PROJECT_NAME} dwm)
 target_link_libraries(${PROJECT_NAME} ixwebsocket)
 target_link_libraries(${PROJECT_NAME} abelectronics)
+
+if(NOT MSVC)
+    target_link_libraries(${PROJECT_NAME} abelectronics) # Linux Dependent
+endif()
