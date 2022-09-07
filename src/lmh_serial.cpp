@@ -1,6 +1,10 @@
 #include "lmh_serial.h"
 
+#include <chrono>
 #include <serial/serial.h>
+#include <thread>
+
+using namespace std::chrono_literals;
 
 static serial::Serial g_serial;
 
@@ -34,10 +38,24 @@ static void LMH_Serial_Init()
 	auto timeout = serial::Timeout::simpleTimeout( 100 );
 	g_serial.setTimeout( timeout );
 
+	LMH_Log( "Waiting for connection to tag...\n" );
+
 	std::string evb_port;
 	while ( evb_port.empty() )
 	{
 		std::vector<serial::PortInfo> ports = serial::list_ports();
+
+		LMH_Log( "Available ports:\n" );
+		for ( size_t i = 0; i < ports.size(); i++ )
+		{
+			LMH_Log( "\t%i. %s (name=%s, desc=%s, manufacturer=%s, hwid=%s)\n", (int)i,
+				ports[i].port.c_str(),
+				ports[i].name.c_str(),
+				ports[i].description.c_str(),
+				ports[i].manufacturer.c_str(),
+				ports[i].hardware_id.c_str() );
+		}
+
 		for ( const serial::PortInfo& port : ports )
 		{
 			for ( const char* device_str : DEVICE_STRS )
@@ -48,6 +66,11 @@ static void LMH_Serial_Init()
 				}
 			}
 		}
+
+		if ( evb_port.empty() )
+			std::this_thread::sleep_for( 1000ms );
+		else
+			LMH_Log( "Connected to tag on port %s\n", evb_port.c_str() );
 	}
 
 	try
