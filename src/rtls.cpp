@@ -35,15 +35,21 @@ bool RTLS::Run()
 	}
 	else
 	{
+		Vec3 bestPos = result.GetPossibleTagPosition( 0 );
+
 		std::cout << "Tag possible positions:\n";
 		for ( size_t i = 0; i < result.NumPossibleTagPositions(); i++ )
 		{
 			const Vec3& pos = result.GetPossibleTagPosition( i );
 			std::cout << "\t{ " << pos.x << ", " << pos.y << ", " << pos.z << " }\n";
+		
+			// For now, assume anchors are at z=0
+			// Tag is always above the anchors
+			if ( pos.z > 0 )
+				bestPos = pos;
 		}
 
-		const Vec3& pos = result.GetPossibleTagPosition( 0 );
-		mVelocityOutputData.CalcVelocity( pos, Util_GetCurrentTime() );
+		mVelocityOutputData.CalcVelocity( bestPos, Util_GetCurrentTime() );
 		mVelocityOutputData.TestPrintVelocity();
 	}
 
