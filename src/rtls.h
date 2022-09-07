@@ -1,8 +1,9 @@
 #pragma once
 
 #include "trilaterationsolver.h"
-#include "velocity_output.h"
+#include "uart_interface.h"
 #include "uwb_tag.h"
+#include "velocity_output.h"
 #include <memory>
 
 class RTLS
@@ -16,5 +17,6 @@ public:
 private:
 	UWBTag mTag;
 	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
+	UartInterface mUartInterface = UartInterface( 1 );
 	VelocityOutputData mVelocityOutputData;
 };

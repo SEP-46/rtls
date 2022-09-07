@@ -2,7 +2,6 @@
 
 #include "trilaterationsolver_basic.h"
 #include <iostream>
-#include "uart_interface.h"
 
 RTLS::RTLS()
 {
@@ -51,6 +50,9 @@ bool RTLS::Run()
 
 		mVelocityOutputData.CalcVelocity( bestPos, Util_GetCurrentTime() );
 		mVelocityOutputData.TestPrintVelocity();
+
+		// TODO: May need to be byteswapped, or write in text format
+		mUartInterface.Write( &bestPos, sizeof( bestPos ) );
 	}
 
 	return true;
