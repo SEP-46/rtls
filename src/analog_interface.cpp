@@ -19,27 +19,6 @@ int AnalogInterface::Write(const Vec3& data)
 {
 	return 0;
 }
-
-Vec3 AnalogInterface::GetMinRange()
-{
-	return mMinRange;
-}
-Vec3 AnalogInterface::GetMaxRange()
-{
-	return mMaxRange;
-}
-void AnalogInterface::SetRange(const Vec3& aMin, const Vec3& aMax)
-{
-	mMinRange = aMin;
-	mMaxRange = aMax;
-	mSpanRange = mMaxRange - mMinRange;
-}
-uint16_t AnalogInterface::Translate(float aValue, float aMinRange, float aSpanRange)
-{
-	float result = DAC_MIN_OUTPUT + ((aValue - aMinRange / aSpanRange) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
-	return (uint16_t)result;
-}
-
 #else
 // Linux specific code
 // ...
@@ -74,6 +53,8 @@ int AnalogInterface::Write(const Vec3& data)
 	return 0;
 }
 
+#endif
+
 Vec3 AnalogInterface::GetMinRange()
 {
 	return mMinRange;
@@ -90,11 +71,7 @@ void AnalogInterface::SetRange(const Vec3& aMin, const Vec3& aMax)
 }
 uint16_t AnalogInterface::Translate(float aValue, float aMinRange, float aSpanRange)
 {
-	float result = DAC_MIN_OUTPUT + ((aValue - aMinRange / aSpanRange) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
+	float result = DAC_MIN_OUTPUT + (((aValue - aMinRange) / aSpanRange) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
 	return (uint16_t)result;
 }
-
-#endif
-
-
 

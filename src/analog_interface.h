@@ -15,7 +15,7 @@ public:
 	Vec3 GetMinRange();
 	Vec3 GetMaxRange();
 	void SetRange(const Vec3& aMin, const Vec3& aMax);
-	uint16_t AnalogInterface::Translate(float aValue, float aMinRange, float aMaxRange);
+	uint16_t Translate(float aValue, float aMinRange, float aMaxRange);
 
 private:
 	Vec3 mMinRange = { -2.048, -2.048, -2.048 };
