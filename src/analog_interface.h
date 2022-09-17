@@ -4,13 +4,6 @@
 #include "vector.h"
 #include <cstdint>
 
-struct Resolution
-{
-	float x;
-	float y;
-	float z;
-};
-
 class AnalogInterface : public CommunicationInterface
 {
 public:
@@ -21,13 +14,11 @@ public:
 
 	Vec3 GetMinRange();
 	Vec3 GetMaxRange();
-	void SetRange(Vec3 aMin, Vec3 aMax);
-	void SetResolution();
-
-	uint16_t CastAsInt(float aResAxis, float aTagCoord);
+	void SetRange(const Vec3& aMin, const Vec3& aMax);
+	uint16_t AnalogInterface::Translate(float aValue, float aMinRange, float aMaxRange);
 
 private:
 	Vec3 mMinRange = { -2.048, -2.048, -2.048 };
 	Vec3 mMaxRange = { 2.048, 2.048, 2.048 };
-	Resolution mResolution = { 1000.0, 1000.0, 1000.0 };
+	Vec3 mSpanRange = { 4.095, 4.095, 4.095 };
 };

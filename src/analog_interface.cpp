@@ -1,7 +1,7 @@
 #include "analog_interface.h"
-#include <cmath>
 
-#define ResCE 244.2002442 // Resolution Coefficent (1000/4.095)
+static constexpr uint16_t DAC_MAX_OUTPUT = 4095;
+static constexpr uint16_t DAC_MIN_OUTPUT = 0;
 
 #ifdef WIN32
 // Microsoft specific code
@@ -28,23 +28,15 @@ Vec3 AnalogInterface::GetMaxRange()
 {
 	return mMaxRange;
 }
-void AnalogInterface::SetRange(Vec3 aMin, Vec3 aMax)
+void AnalogInterface::SetRange(const Vec3& aMin, const Vec3& aMax)
 {
 	mMinRange = aMin;
 	mMaxRange = aMax;
-	SetResolution();
+	mSpanRange = mMaxRange - mMinRange;
 }
-void AnalogInterface::SetResolution()
+uint16_t AnalogInterface::Translate(float aValue, float aMinRange, float aSpanRange)
 {
-	Vec3 MagnitudeRange = mMaxRange - mMinRange;
-	mResolution.x = abs(MagnitudeRange.x)*ResCE;
-	mResolution.y = abs(MagnitudeRange.y)*ResCE;
-	mResolution.z = abs(MagnitudeRange.z)*ResCE;
-}
-
-uint16_t AnalogInterface::CastAsInt(float aResAxis, float aTagCoord)
-{
-	float result = aResAxis * aTagCoord;
+	float result = DAC_MIN_OUTPUT + ((aValue - aMinRange / aSpanRange) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
 	return (uint16_t)result;
 }
 
@@ -77,8 +69,8 @@ int AnalogInterface::Read(Vec3* data)
 int AnalogInterface::Write(const Vec3& data)
 {
 	// Sets the voltage to match to location data
-	gAnalog.set_dac_raw(CastAsInt(mResolution.x, data.x), 1); // X location to Ch1
-	gAnalog.set_dac_raw(CastAsInt(mResolution.y, data.y), 2); // Y location to Ch2
+	gAnalog.set_dac_raw(Translate(data.x, mMinRange.x, mSpanRange.x), 1); // X location to Ch1
+	gAnalog.set_dac_raw(Translate(data.y, mMinRange.y, mSpanRange.y), 2); // Y location to Ch2
 	return 0;
 }
 
@@ -90,23 +82,15 @@ Vec3 AnalogInterface::GetMaxRange()
 {
 	return mMaxRange;
 }
-void AnalogInterface::SetRange(Vec3 aMin, Vec3 aMax)
+void AnalogInterface::SetRange(const Vec3& aMin, const Vec3& aMax)
 {
 	mMinRange = aMin;
 	mMaxRange = aMax;
-	SetResolution();
+	mSpanRange = mMaxRange - mMinRange;
 }
-void AnalogInterface::SetResolution()
+uint16_t AnalogInterface::Translate(float aValue, float aMinRange, float aSpanRange)
 {
-	Vec3 MagnitudeRange = mMaxRange - mMinRange;
-	mResolution.x = abs(MagnitudeRange.x) * ResCE;
-	mResolution.y = abs(MagnitudeRange.y) * ResCE;
-	mResolution.z = abs(MagnitudeRange.z) * ResCE;
-}
-
-uint16_t AnalogInterface::CastAsInt(float aResAxis, float aTagCoord)
-{
-	float result = aResAxis * aTagCoord;
+	float result = DAC_MIN_OUTPUT + ((aValue - aMinRange / aSpanRange) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
 	return (uint16_t)result;
 }
 
