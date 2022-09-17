@@ -71,3 +71,12 @@ bool RTLS::Run()
 
 	return true;
 }
+
+std::vector<Vec3> RTLS::GetAnchorPos()
+{
+	return {
+		Vec3(1, 2, 3),
+		Vec3(4, 5, 6),
+		Vec3(7, 8, 9),
+	};
+}
