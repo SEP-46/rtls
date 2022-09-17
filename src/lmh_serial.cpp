@@ -41,7 +41,7 @@ static void LMH_Serial_Init()
 	LMH_Log( "Waiting for connection to tag...\n" );
 
 	std::string evb_port;
-	while ( evb_port.empty() )
+	for( int attempts = 0; attempts < 3; attempts++ )
 	{
 		std::vector<serial::PortInfo> ports = serial::list_ports();
 
@@ -73,14 +73,21 @@ static void LMH_Serial_Init()
 			LMH_Log( "Connected to tag on port %s\n", evb_port.c_str() );
 	}
 
-	try
+	if ( !evb_port.empty() )
 	{
-		g_serial.setPort( evb_port );
-		g_serial.open();
+		try
+		{
+			g_serial.setPort( evb_port );
+			g_serial.open();
+		}
+		catch ( const std::exception& e )
+		{
+			LMH_Log( "lmh: *****ERROR*****: %s\n", e.what() );
+		}
 	}
-	catch ( const std::exception& e )
+	else
 	{
-		LMH_Log( "lmh: *****ERROR*****: %s", e.what() );
+		LMH_Log( "WARNING: No tag found!\n" );
 	}
 }
 
@@ -107,6 +114,9 @@ static void LMH_Serial_DeInit( void )
  */
 static int LMH_Serial_Tx( uint8_t* data, uint8_t* length )
 {
+	if ( !g_serial.isOpen() )
+		return LMH_ERR;
+
 	size_t tx_length = *length;
 	size_t written = g_serial.write( data, tx_length );
 	return ( written == tx_length ) ? LMH_OK : LMH_ERR;
@@ -130,6 +140,9 @@ static int LMH_Serial_Tx( uint8_t* data, uint8_t* length )
  */
 static int LMH_Serial_WaitForRx( uint8_t* data, uint16_t* length, uint16_t exp_length )
 {
+	if ( !g_serial.isOpen() )
+		return LMH_ERR;
+
 	*length = (uint16_t)g_serial.read( data, (size_t)exp_length );
 	return LMH_OK;
 }

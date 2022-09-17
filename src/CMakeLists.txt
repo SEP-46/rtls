@@ -6,6 +6,7 @@ set(SRCS
     mock_tag.cpp
     mock_tag.h
     optparse.h
+    restapi.cpp
     rtls.cpp
     rtls.h
     settings.cpp
