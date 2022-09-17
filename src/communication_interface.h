@@ -1,8 +1,10 @@
 #pragma once
 
+#include "vector.h"
+
 class CommunicationInterface
 {
 public:
-	virtual int Read( void* data, int length ) = 0;
-	virtual int Write( const void* data, int length ) = 0;
+	virtual bool Read( Vec3* data ) = 0;
+	virtual bool Write( const Vec3& data ) = 0;
 };

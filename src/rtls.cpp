@@ -52,7 +52,7 @@ bool RTLS::Run()
 		mVelocityOutputData.TestPrintVelocity();
 
 		// TODO: May need to be byteswapped, or write in text format
-		mUartInterface.Write( &bestPos, sizeof( bestPos ) );
+		mUartInterface.Write( bestPos );
 	}
 
 	return true;

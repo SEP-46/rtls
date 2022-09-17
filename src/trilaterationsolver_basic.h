@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vector.h"
 #include "trilaterationsolver.h"
 
 // Given the positions of 3 anchors, and their distances to the tag, calculates the 2 possible positions of the tag.

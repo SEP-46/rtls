@@ -1,6 +1,8 @@
 #include "uart_interface.h"
 #include <serial/serial.h>
 
+#include "vector.h"
+
 static serial::Serial gSerial;
 
 UartInterface::UartInterface( int portIndex )
@@ -15,20 +17,20 @@ UartInterface::UartInterface( const char* portName )
 	ConnectToPort( portName );
 }
 
-int UartInterface::Read( void* data, int length )
+bool UartInterface::Read( Vec3* data )
 {
 	if ( !gSerial.isOpen() )
 		return 0;
 
-	return (int)gSerial.read( (uint8_t*)data, length );
+	return (int)gSerial.read( (uint8_t*)data, sizeof( Vec3 ) ) == sizeof( Vec3 );
 }
 
-int UartInterface::Write( const void* data, int length )
+bool UartInterface::Write( const Vec3& data )
 {
 	if ( !gSerial.isOpen() )
 		return 0;
 
-	return (int)gSerial.write( (const uint8_t*)data, length );
+	return (int)gSerial.write( (const uint8_t*)&data, sizeof( Vec3 ) ) == sizeof( Vec3 );
 }
 
 void UartInterface::ConnectToPort( const char* portName )
