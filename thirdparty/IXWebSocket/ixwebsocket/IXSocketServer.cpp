@@ -94,7 +94,7 @@ namespace ix
             ss << "SocketServer::listen() error calling setsockopt(SO_REUSEADDR) "
                << "at address " << _host << ":" << _port << " : " << strerror(Socket::getErrno());
 
-            Socket::closeSocket(_serverFd);
+            Socket::closeSocket((int)_serverFd);
             return std::make_pair(false, ss.str());
         }
 
@@ -111,7 +111,7 @@ namespace ix
                    << "at address " << _host << ":" << _port << " : "
                    << strerror(Socket::getErrno());
 
-                Socket::closeSocket(_serverFd);
+                Socket::closeSocket((int)_serverFd);
                 return std::make_pair(false, ss.str());
             }
 
@@ -123,7 +123,7 @@ namespace ix
                    << "at address " << _host << ":" << _port << " : "
                    << strerror(Socket::getErrno());
 
-                Socket::closeSocket(_serverFd);
+                Socket::closeSocket((int)_serverFd);
                 return std::make_pair(false, ss.str());
             }
         }
@@ -140,7 +140,7 @@ namespace ix
                    << "at address " << _host << ":" << _port << " : "
                    << strerror(Socket::getErrno());
 
-                Socket::closeSocket(_serverFd);
+                Socket::closeSocket((int)_serverFd);
                 return std::make_pair(false, ss.str());
             }
 
@@ -152,7 +152,7 @@ namespace ix
                    << "at address " << _host << ":" << _port << " : "
                    << strerror(Socket::getErrno());
 
-                Socket::closeSocket(_serverFd);
+                Socket::closeSocket((int)_serverFd);
                 return std::make_pair(false, ss.str());
             }
         }
@@ -166,7 +166,7 @@ namespace ix
             ss << "SocketServer::listen() error calling listen "
                << "at address " << _host << ":" << _port << " : " << strerror(Socket::getErrno());
 
-            Socket::closeSocket(_serverFd);
+            Socket::closeSocket((int)_serverFd);
             return std::make_pair(false, ss.str());
         }
 
@@ -225,7 +225,7 @@ namespace ix
         }
 
         _conditionVariable.notify_one();
-        Socket::closeSocket(_serverFd);
+        Socket::closeSocket((int)_serverFd);
     }
 
     void SocketServer::setConnectionStateFactory(
@@ -266,7 +266,7 @@ namespace ix
     void SocketServer::run()
     {
         // Set the socket to non blocking mode, so that accept calls are not blocking
-        SocketConnect::configure(_serverFd);
+        SocketConnect::configure((int)_serverFd);
 
         // Use a cryptic name to stay within the 16 bytes limit thread name limitation
         // $ echo Srv:gc:64000 | wc -c
@@ -286,7 +286,7 @@ namespace ix
 
             bool readyToRead = true;
             PollResultType pollResult =
-                Socket::poll(readyToRead, timeoutMs, _serverFd, _acceptSelectInterrupt);
+                Socket::poll(readyToRead, timeoutMs, (int)_serverFd, _acceptSelectInterrupt);
 
             if (pollResult == PollResultType::Error)
             {
@@ -308,7 +308,7 @@ namespace ix
             socklen_t addressLen = sizeof(client);
             memset(&client, 0, sizeof(client));
 
-            if ((clientFd = accept(_serverFd, (struct sockaddr*) &client, &addressLen)) < 0)
+            if ((clientFd = (int)accept(_serverFd, (struct sockaddr*) &client, &addressLen)) < 0)
             {
                 if (!Socket::isWaitNeeded())
                 {

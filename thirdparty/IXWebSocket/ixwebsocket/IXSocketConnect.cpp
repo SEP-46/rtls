@@ -45,14 +45,14 @@ namespace ix
 
         // Set the socket to non blocking mode, so that slow responses cannot
         // block us for too long
-        SocketConnect::configure(fd);
+        SocketConnect::configure((int)fd);
 
-        int res = ::connect(fd, address->ai_addr, address->ai_addrlen);
+        int res = ::connect(fd, address->ai_addr, (int)address->ai_addrlen);
 
         if (res == -1 && !Socket::isWaitNeeded())
         {
             errMsg = strerror(Socket::getErrno());
-            Socket::closeSocket(fd);
+            Socket::closeSocket((int)fd);
             return -1;
         }
 
@@ -60,7 +60,7 @@ namespace ix
         {
             if (isCancellationRequested && isCancellationRequested()) // Must handle timeout as well
             {
-                Socket::closeSocket(fd);
+                Socket::closeSocket((int)fd);
                 errMsg = "Cancelled";
                 return -1;
             }
@@ -68,7 +68,7 @@ namespace ix
             int timeoutMs = 10;
             bool readyToRead = false;
             SelectInterruptPtr selectInterrupt = ix::createSelectInterrupt();
-            PollResultType pollResult = Socket::poll(readyToRead, timeoutMs, fd, selectInterrupt);
+            PollResultType pollResult = Socket::poll(readyToRead, timeoutMs, (int)fd, selectInterrupt);
 
             if (pollResult == PollResultType::Timeout)
             {
@@ -76,17 +76,17 @@ namespace ix
             }
             else if (pollResult == PollResultType::Error)
             {
-                Socket::closeSocket(fd);
+                Socket::closeSocket((int)fd);
                 errMsg = std::string("Connect error: ") + strerror(Socket::getErrno());
                 return -1;
             }
             else if (pollResult == PollResultType::ReadyForWrite)
             {
-                return fd;
+                return (int)fd;
             }
             else
             {
-                Socket::closeSocket(fd);
+                Socket::closeSocket((int)fd);
                 errMsg = std::string("Connect error: ") + strerror(Socket::getErrno());
                 return -1;
             }
