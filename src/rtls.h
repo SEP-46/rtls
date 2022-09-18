@@ -2,6 +2,7 @@
 
 #include "trilaterationsolver.h"
 #include "uart_interface.h"
+#include "websocket_interface.h"
 #include "uwb_tag.h"
 #include "velocity_output.h"
 #include <memory>
@@ -18,5 +19,6 @@ private:
 	UWBTag mTag;
 	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
 	UartInterface mUartInterface = UartInterface( 1 );
+	WebSocketInterface mWebSocketInterface = WebSocketInterface( 9002 );
 	VelocityOutputData mVelocityOutputData;
 };

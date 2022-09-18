@@ -17,8 +17,10 @@ set(SRCS
     uwb_tag.cpp
     uwb_tag.h
     vector.h
-    velocity_output.h
     velocity_output.cpp
+    velocity_output.h
+    websocket_interface.cpp
+    websocket_interface.h
 )
 
 add_library(${PROJECT_NAME} ${SRCS})

@@ -53,6 +53,7 @@ bool RTLS::Run()
 
 		// TODO: May need to be byteswapped, or write in text format
 		mUartInterface.Write( bestPos );
+		mWebSocketInterface.Write( bestPos );
 	}
 
 	return true;
