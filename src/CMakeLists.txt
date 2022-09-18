@@ -27,3 +27,4 @@ target_link_libraries(rtls-main ${PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME} serial)
 target_link_libraries(${PROJECT_NAME} dwm)
+target_link_libraries(${PROJECT_NAME} ixwebsocket)
