@@ -1,4 +1,5 @@
 set(TESTS
+    optparse_test.cpp
     trilaterationbasic_test.cpp
     uwb_anchor_test.cpp
     vector_test.cpp
