@@ -51,7 +51,7 @@ namespace ix
 
         if (bind(sockfd, (struct sockaddr*) &server, sizeof(server)) < 0)
         {
-            Socket::closeSocket(sockfd);
+            Socket::closeSocket((int)sockfd);
             return getAnyFreePortRandom();
         }
 
@@ -59,12 +59,12 @@ namespace ix
         socklen_t len = sizeof(sa);
         if (getsockname(sockfd, (struct sockaddr*) &sa, &len) < 0)
         {
-            Socket::closeSocket(sockfd);
+            Socket::closeSocket((int)sockfd);
             return getAnyFreePortRandom();
         }
 
         int port = ntohs(sa.sin_port);
-        Socket::closeSocket(sockfd);
+        Socket::closeSocket((int)sockfd);
 
         return port;
     }

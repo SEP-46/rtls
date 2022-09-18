@@ -21,7 +21,7 @@ namespace ix
         uint32_t waitTime = 0;
         if (retryCount < maxRetryCountWithoutOverflow)
         {
-            waitTime = std::pow(2, retryCount) * 100;
+            waitTime = (uint32_t)(std::pow(2, retryCount) * 100);
         }
 
         if (waitTime < minWaitBetweenReconnectionRetries)
