@@ -17,7 +17,7 @@ UWBTag::~UWBTag()
 	dwm_deinit();
 }
 
-bool UWBTag::UpdateDistanceData()
+bool UWBTag::ReadDistanceData()
 {
 	dwm_status_t status;
 	if ( dwm_status_get( &status ) != RV_OK || !status.loc_data )

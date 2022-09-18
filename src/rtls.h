@@ -1,10 +1,10 @@
 #pragma once
 
+#include "tag.h"
 #include "trilaterationsolver.h"
 #include "uart_interface.h"
-#include "websocket_interface.h"
-#include "uwb_tag.h"
 #include "velocity_output.h"
+#include "websocket_interface.h"
 #include <memory>
 
 class RTLS
@@ -16,7 +16,7 @@ public:
 	bool Run();
 
 private:
-	UWBTag mTag;
+	std::unique_ptr<Tag> mTag;
 	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
 	UartInterface mUartInterface = UartInterface( 1 );
 	WebSocketInterface mWebSocketInterface = WebSocketInterface( 9002 );
