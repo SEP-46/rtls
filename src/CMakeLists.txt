@@ -3,9 +3,14 @@ set(SRCS
     lmh_serial.cpp
     lmh_serial.h
     mathlib.h
+    mock_tag.cpp
+    mock_tag.h
     optparse.h
     rtls.cpp
     rtls.h
+    settings.cpp
+    settings.h
+    tag.h
     trilaterationsolver.h
     trilaterationsolver_basic.cpp
     trilaterationsolver_basic.h

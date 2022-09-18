@@ -1,21 +1,34 @@
 #include "rtls.h"
 
+#include "settings.h"
+#include "uwb_tag.h"
+#include "mock_tag.h"
 #include "trilaterationsolver_basic.h"
 #include <iostream>
 
 RTLS::RTLS()
 {
 	mTrilaterationSolver = std::make_unique<TrilaterationSolver_Basic>();
+
+	const Settings& settings = GetSettings();
+	if ( settings.mock_tag )
+	{
+		mTag = std::make_unique<MockTag>();
+	}
+	else
+	{
+		mTag = std::make_unique<UWBTag>();
+	}
 }
 
 bool RTLS::Run()
 {
-	if ( !mTag.UpdateDistanceData() )
+	if ( !mTag->ReadDistanceData() )
 		return true;
 
 	Vec3 anchorPositions[MAX_ANCHORS];
 	float anchorDistances[MAX_ANCHORS];
-	size_t numAnchors = mTag.CollectAnchorPositionsAndDistances( anchorPositions, anchorDistances );
+	size_t numAnchors = mTag->CollectAnchorPositionsAndDistances( anchorPositions, anchorDistances );
 
 	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( anchorPositions, anchorDistances, numAnchors );
 	if ( !result.SolutionFound() )
