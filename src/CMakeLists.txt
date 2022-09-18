@@ -3,6 +3,7 @@ set(SRCS
     lmh_serial.cpp
     lmh_serial.h
     mathlib.h
+    optparse.h
     rtls.cpp
     rtls.h
     trilaterationsolver.h
