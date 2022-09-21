@@ -6,10 +6,8 @@ static constexpr uint16_t DAC_MIN_OUTPUT = 0;
 #ifdef WIN32
 // Microsoft specific code
 // ...
-AnalogInterface::AnalogInterface()
-{
-	return;
-}
+AnalogInterface::AnalogInterface(){}
+AnalogInterface::~AnalogInterface(){}
 
 int AnalogInterface::Read(Vec3* data)
 {
@@ -32,10 +30,10 @@ AnalogInterface::AnalogInterface()
 	{
 		return; // if the SPI bus fails to open exit the function
 	}
-	adcdac.set_dac_gain(1); // set the dac gain to 1 which will give a voltage range of 0 to 2.048V
+	gAnalog.set_dac_gain(1); // set the dac gain to 1 which will give a voltage range of 0 to 2.048V
 }
 
-~AnalogInterface::AnalogInterface()
+AnalogInterface::~AnalogInterface()
 {
 	gAnalog.close_dac();
 }

@@ -8,6 +8,7 @@ class AnalogInterface : public CommunicationInterface
 {
 public:
 	AnalogInterface();
+	~AnalogInterface();
 
 	virtual int Read( Vec3* data);
 	virtual int Write( const Vec3& data);

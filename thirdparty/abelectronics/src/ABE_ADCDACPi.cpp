@@ -135,8 +135,8 @@ uint16_t ADCDACPi::read_adc_raw(uint8_t channel, uint8_t mode) {
 	struct spi_ioc_transfer spi;
 	memset(&spi,0,sizeof(spi));
 
-	spi.tx_buf = (uint32_t)adctx;
-	spi.rx_buf = (uint32_t)adcrx;
+	spi.tx_buf = (uintptr_t)adctx;
+	spi.rx_buf = (uintptr_t)adcrx;
 	spi.len = 3;
 	spi.speed_hz = adcspeed;
 	spi.delay_usecs = 0;
@@ -196,8 +196,8 @@ void ADCDACPi::set_dac_raw(uint16_t raw, uint8_t channel) {
 	struct spi_ioc_transfer tr;
     memset(&tr,0,sizeof(tr));
 
-	tr.tx_buf = (uint32_t)&dactx;
-	tr.rx_buf = (uint32_t)NULL;
+	tr.tx_buf = (uintptr_t)&dactx;
+	tr.rx_buf = (uintptr_t)NULL;
 	tr.len = 2;
 	tr.speed_hz = dacspeed;
 	tr.delay_usecs = 0;
