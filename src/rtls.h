@@ -6,6 +6,7 @@
 #include "velocity_output.h"
 #include "websocket_interface.h"
 #include <memory>
+#include <vector>
 
 class RTLS
 {
@@ -14,6 +15,10 @@ public:
 
 	// Run loop, is called indefinitely until it returns false
 	bool Run();
+
+	std::vector<Vec3> GetAnchorPos();
+	void SetAnchorPos(int AnchorIndex, Vec3 position) {}
+	
 
 private:
 	std::unique_ptr<Tag> mTag;
