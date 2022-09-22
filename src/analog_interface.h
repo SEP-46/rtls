@@ -10,8 +10,8 @@ public:
 	AnalogInterface();
 	~AnalogInterface();
 
-	virtual int Read( Vec3* data);
-	virtual int Write( const Vec3& data);
+	virtual bool Read( Vec3* data);
+	virtual bool Write( const Vec3& data);
 
 	Vec3 GetMinRange();
 	Vec3 GetMaxRange();

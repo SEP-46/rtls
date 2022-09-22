@@ -9,13 +9,13 @@ static constexpr uint16_t DAC_MIN_OUTPUT = 0;
 AnalogInterface::AnalogInterface(){}
 AnalogInterface::~AnalogInterface(){}
 
-int AnalogInterface::Read(Vec3* data)
+bool AnalogInterface::Read(Vec3* data)
 {
-	return 0;
+	return false;
 }
-int AnalogInterface::Write(const Vec3& data)
+bool AnalogInterface::Write(const Vec3& data)
 {
-	return 0;
+	return false;
 }
 #else
 // Linux specific code
@@ -38,17 +38,17 @@ AnalogInterface::~AnalogInterface()
 	gAnalog.close_dac();
 }
 
-int AnalogInterface::Read(Vec3* data)
+bool AnalogInterface::Read(Vec3* data)
 {
-	return 0;
+	return false;
 }
 
-int AnalogInterface::Write(const Vec3& data)
+bool AnalogInterface::Write(const Vec3& data)
 {
 	// Sets the voltage to match to location data
 	gAnalog.set_dac_raw(Translate(data.x, mMinRange.x, mSpanRange.x), 1); // X location to Ch1
 	gAnalog.set_dac_raw(Translate(data.y, mMinRange.y, mSpanRange.y), 2); // Y location to Ch2
-	return 0;
+	return false;
 }
 
 #endif
