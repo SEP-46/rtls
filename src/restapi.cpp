@@ -26,7 +26,9 @@ void StartWebServer(RTLS& rtls)
         res.set_content(ss.str(), "text/plain");
     });
 
-    svr.Put("/anchors/0", [&](const Request& req, Response& res) {
+
+    //setting anchor 0
+    svr.Put("/anchors/0", [&](const Request& req, Response& res) {      
         json data = json::parse(req.body);      //gets xyz data
         Vec3 position;      //create a vector
         position.x = data["x"];
@@ -39,6 +41,47 @@ void StartWebServer(RTLS& rtls)
 
     });
     
+    //setting anchor 1
+    svr.Put("/anchors/1", [&](const Request& req, Response& res) {
+        json data = json::parse(req.body);      //gets xyz data
+        Vec3 position;      //create a vector
+        position.x = data["x"];
+        position.y = data["y"];
+        position.z = data["z"];
+
+        rtls.SetAnchorPos(1, position);
+
+        res.set_content("Success!", "text/plain");
+
+    });
+
+    //setting anchor 2
+    svr.Put("/anchors/2", [&](const Request& req, Response& res) {
+        json data = json::parse(req.body);      //gets xyz data
+        Vec3 position;      //create a vector
+        position.x = data["x"];
+        position.y = data["y"];
+        position.z = data["z"];
+
+        rtls.SetAnchorPos(2, position);
+
+        res.set_content("Success!", "text/plain");
+
+    });
+
+    //setting anchor 3
+    svr.Put("/anchors/3", [&](const Request& req, Response& res) {
+        json data = json::parse(req.body);      //gets xyz data
+        Vec3 position;      //create a vector
+        position.x = data["x"];
+        position.y = data["y"];
+        position.z = data["z"];
+
+        rtls.SetAnchorPos(3, position);
+
+        res.set_content("Success!", "text/plain");
+
+    });
 
     svr.listen("localhost", 80);    //setting port to 80
 }
