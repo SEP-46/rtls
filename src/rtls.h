@@ -17,6 +17,8 @@ public:
 	bool Run();
 
 	std::vector<Vec3> GetAnchorPos();
+	void SetAnchorPos(int AnchorIndex, Vec3 position) {}
+	
 
 private:
 	std::unique_ptr<Tag> mTag;

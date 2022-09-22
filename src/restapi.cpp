@@ -1,10 +1,12 @@
 #include "restapi.h"
 #include "httplib.h"
 #include <sstream>
+#include "json.hpp"
 
 void StartWebServer(RTLS& rtls)
 {
     using namespace httplib;
+    using json = nlohmann::json;
 
     Server svr;
 
@@ -23,6 +25,20 @@ void StartWebServer(RTLS& rtls)
 
         res.set_content(ss.str(), "text/plain");
     });
+
+    svr.Put("/anchors/0", [&](const Request& req, Response& res) {
+        json data = json::parse(req.body);      //gets xyz data
+        Vec3 position;      //create a vector
+        position.x = data["x"];
+        position.y = data["y"];
+        position.z = data["z"];
+
+        rtls.SetAnchorPos(0, position);
+
+        res.set_content("Success!", "text/plain");
+
+    });
+    
 
     svr.listen("localhost", 80);    //setting port to 80
 }
