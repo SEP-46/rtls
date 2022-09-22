@@ -15,7 +15,6 @@ endif()
 add_subdirectory(thirdparty/serial)
 add_subdirectory(thirdparty/dwm)
 add_subdirectory(thirdparty/ixwebsocket)
-add_subdirectory(thirdparty/abelectronics)
 
 if(NOT MSVC)
     add_subdirectory(thirdparty/abelectronics) # Linux dependent
