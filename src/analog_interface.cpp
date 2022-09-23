@@ -30,7 +30,7 @@ AnalogInterface::AnalogInterface()
 	{
 		return; // if the SPI bus fails to open exit the function
 	}
-	gAnalog.set_dac_gain(1); // set the dac gain to 1 which will give a voltage range of 0 to 2.048V
+	gAnalog.set_dac_gain(2); // set the dac gain to 1 which will give a voltage range of 0 to 2.048V
 }
 
 AnalogInterface::~AnalogInterface()
@@ -45,9 +45,15 @@ bool AnalogInterface::Read(Vec3* data)
 
 bool AnalogInterface::Write(const Vec3& data)
 {
-	// Sets the voltage to match to location data
-	gAnalog.set_dac_raw(Translate(data.x, mMinRange.x, mSpanRange.x), 1); // X location to Ch1
-	gAnalog.set_dac_raw(Translate(data.y, mMinRange.y, mSpanRange.y), 2); // Y location to Ch2
+	uint16_t dataX = (uint16_t)Translate(data.x, mMinRange.x, mSpanRange.x);
+	uint16_t dataY = (uint16_t)Translate(data.y, mMinRange.y, mSpanRange.y);
+	
+	// Sets the voltage to match to location data	
+	gAnalog.set_dac_raw(0, 1); // X location to Ch1
+	// gAnalog.set_dac_raw(dataX, 1); // X location to Ch1
+	gAnalog.set_dac_raw(4095, 2); // Y location to Ch2
+	// gAnalog.set_dac_raw(dataY, 2); // Y location to Ch2
+	
 	return false;
 }
 
@@ -67,9 +73,17 @@ void AnalogInterface::SetRange(const Vec3& aMin, const Vec3& aMax)
 	mMaxRange = aMax;
 	mSpanRange = mMaxRange - mMinRange;
 }
-uint16_t AnalogInterface::Translate(float aValue, float aMinRange, float aSpanRange)
+float AnalogInterface::Translate(float aValue, float aMinRange, float aSpanRange)
 {
 	float result = DAC_MIN_OUTPUT + (((aValue - aMinRange) / aSpanRange) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
-	return (uint16_t)result;
+	if (result < 0.0)
+	{
+		return 0.0;
+	}
+	if (result > 4095.0)
+	{
+		return 4095.0;
+	}
+	return result;
 }
 

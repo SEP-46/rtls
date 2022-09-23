@@ -1,5 +1,6 @@
 #pragma once
 
+#include "analog_interface.h"
 #include "tag.h"
 #include "trilaterationsolver.h"
 #include "uart_interface.h"
@@ -19,6 +20,7 @@ private:
 	std::unique_ptr<Tag> mTag;
 	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
 	UartInterface mUartInterface = UartInterface( 1 );
+	AnalogInterface mAnalogInterface;
 	WebSocketInterface mWebSocketInterface = WebSocketInterface( 9002 );
 	VelocityOutputData mVelocityOutputData;
 };

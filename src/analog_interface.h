@@ -16,10 +16,10 @@ public:
 	Vec3 GetMinRange();
 	Vec3 GetMaxRange();
 	void SetRange(const Vec3& aMin, const Vec3& aMax);
-	uint16_t Translate(float aValue, float aMinRange, float aMaxRange);
+	float Translate(float aValue, float aMinRange, float aMaxRange);
 
 private:
-	Vec3 mMinRange = { -2.048, -2.048, -2.048 };
-	Vec3 mMaxRange = { 2.048, 2.048, 2.048 };
-	Vec3 mSpanRange = { 4.095, 4.095, 4.095 };
+	Vec3 mMinRange = { 0.0f, 0.0f, 0.0f };
+	Vec3 mMaxRange = { 1.0f, 1.0f, 1.0f };
+	Vec3 mSpanRange = { 1.0f, 1.0f, 1.0f };
 };
