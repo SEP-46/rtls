@@ -8,33 +8,27 @@
 
 RTLS::RTLS()
 {
-	std::cout << "Here 1\n";
 	mTrilaterationSolver = std::make_unique<TrilaterationSolver_Basic>();
 
 	const Settings& settings = GetSettings();
 	if ( settings.mock_tag )
 	{
-		std::cout << "Here 2\n";
 		mTag = std::make_unique<MockTag>();
 	}
 	else
 	{
-		std::cout << "Here 3\n";
 		mTag = std::make_unique<UWBTag>();
 	}
 }
 
 bool RTLS::Run()
 {
-	std::cout << "Here 4\n";
-	// if ( !mTag->ReadDistanceData() )
-		// return true;
+	if ( !mTag->ReadDistanceData() )
+		return true;
 
 	Vec3 anchorPositions[MAX_ANCHORS];
 	float anchorDistances[MAX_ANCHORS];
 	size_t numAnchors = mTag->CollectAnchorPositionsAndDistances( anchorPositions, anchorDistances );
-	
-	std::cout << "Here 5\n";
 	
 	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( anchorPositions, anchorDistances, numAnchors );
 	if ( !result.SolutionFound() )
@@ -54,7 +48,6 @@ bool RTLS::Run()
 	else
 	{
 		Vec3 bestPos = result.GetPossibleTagPosition( 0 );
-		// Vec3 bestPos = { 0.0f, 1.0f, 0.0f };
 
 		std::cout << "Tag possible positions:\n";
 		for ( size_t i = 0; i < result.NumPossibleTagPositions(); i++ )

@@ -33,7 +33,7 @@ AnalogInterface::AnalogInterface()
 		printf("DAC failed to open\n");
 		return; // if the SPI bus fails to open exit the function
 	}
-	printf("DAC has 'apparently' opened\n");
+	printf("DAC succesfully opened\n");
 	gAnalog.set_dac_gain(2); // set the dac gain to 1 which will give a voltage range of 0 to 2.048V
 }
 
@@ -49,18 +49,9 @@ bool AnalogInterface::Read(Vec3* data)
 
 bool AnalogInterface::Write(const Vec3& data)
 {
-	uint16_t dataX = (uint16_t)Translate(data.x, mMinRange.x, mSpanRange.x);
-	uint16_t dataY = (uint16_t)Translate(data.y, mMinRange.y, mSpanRange.y);
-	
 	// Sets the voltage to match to location data
-	printf("Testing Ch1\n");
-	gAnalog.set_dac_voltage(0, 1);
-	// gAnalog.set_dac_raw(100, 1); // X location to Ch1
-	// gAnalog.set_dac_raw(dataX, 1); // X location to Ch1
-	printf("Testing Ch2\n");
-	gAnalog.set_dac_voltage(1.5, 2);
-	// gAnalog.set_dac_raw(4095, 2); // Y location to Ch2
-	// gAnalog.set_dac_raw(dataY, 2); // Y location to Ch2
+	gAnalog.set_dac_raw((uint16_t)Translate(data.x, mMinRange.x, mSpanRange.x), 1); // X location to Ch1
+	gAnalog.set_dac_raw((uint16_t)Translate(data.y, mMinRange.y, mSpanRange.y), 2); // Y location to Ch2
 	
 	return false;
 }
