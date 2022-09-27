@@ -23,4 +23,8 @@ private:
 	AnalogInterface mAnalogInterface = AnalogInterface();
 	WebSocketInterface mWebSocketInterface = WebSocketInterface( 9002 );
 	VelocityOutputData mVelocityOutputData;
+	
+	// TESTING ONLY
+	// Vec3 mTestWave = { 0.0f, 0.0f, 0.0f };
+	// float mTestTime = 0.0f;
 };
