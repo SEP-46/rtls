@@ -1,6 +1,6 @@
 set(SRCS
     analog_interface.h
-	analog_interface.cpp
+    analog_interface.cpp
     communication_interface.h
     lmh_serial.cpp
     lmh_serial.h

@@ -1,5 +1,6 @@
 #include "analog_interface.h"
 #include <cstdio>
+#include <iostream>
 
 static constexpr uint16_t DAC_MAX_OUTPUT = 4095;
 static constexpr uint16_t DAC_MIN_OUTPUT = 0;
@@ -27,13 +28,12 @@ ABElectronics_CPP_Libraries::ADCDACPi gAnalog;
 
 AnalogInterface::AnalogInterface()
 {
-	setvbuf (stdout, NULL, _IONBF, 0); // needed to print to the command line
 	if (gAnalog.open_dac() != 1) // open the DAC spi channel
 	{
-		printf("DAC failed to open\n");
+		std::cout << "DAC failed to open\n";
 		return; // if the SPI bus fails to open exit the function
 	}
-	printf("DAC succesfully opened\n");
+	std::cout << "DAC succesfully opened\n";
 	gAnalog.set_dac_gain(2); // set the dac gain to 1 which will give a voltage range of 0 to 2.048V
 }
 
@@ -53,7 +53,7 @@ bool AnalogInterface::Write(const Vec3& data)
 	gAnalog.set_dac_raw((uint16_t)Translate(data.x, mMinRange.x, mSpanRange.x), 1); // X location to Ch1
 	gAnalog.set_dac_raw((uint16_t)Translate(data.y, mMinRange.y, mSpanRange.y), 2); // Y location to Ch2
 	
-	return false;
+	return true;
 }
 
 #endif
@@ -75,13 +75,13 @@ void AnalogInterface::SetRange(const Vec3& aMin, const Vec3& aMax)
 float AnalogInterface::Translate(float aValue, float aMinRange, float aSpanRange)
 {
 	float result = DAC_MIN_OUTPUT + (((aValue - aMinRange) / aSpanRange) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
-	if (result < 0.0)
+	if (result < DAC_MIN_OUTPUT)
 	{
-		return 0.0;
+		return DAC_MIN_OUTPUT;
 	}
-	if (result > 4095.0)
+	if (result > DAC_MAX_OUTPUT)
 	{
-		return 4095.0;
+		return DAC_MAX_OUTPUT;
 	}
 	return result;
 }
