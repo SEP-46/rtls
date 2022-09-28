@@ -29,7 +29,7 @@ bool RTLS::Run()
 	Vec3 anchorPositions[MAX_ANCHORS];
 	float anchorDistances[MAX_ANCHORS];
 	size_t numAnchors = mTag->CollectAnchorPositionsAndDistances( anchorPositions, anchorDistances );
-
+	
 	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( anchorPositions, anchorDistances, numAnchors );
 	if ( !result.SolutionFound() )
 	{
@@ -48,6 +48,14 @@ bool RTLS::Run()
 	else
 	{
 		Vec3 bestPos = result.GetPossibleTagPosition( 0 );
+		
+		// TESTING ONLY
+		// mTestWave.x = 0.5f + 0.5f * cosf( mTestTime );
+		// mTestWave.y = 0.5f + 0.5f * sinf( mTestTime );
+		// std::cout << "Tag possible positions:\n";
+		// std::cout << "\t{ " << mTestWave.x << ", " << mTestWave.y << ", " << mTestWave.z << " }\n";
+		// mAnalogInterface.Write( mTestWave );
+		// mTestTime += 0.001;
 
 		std::cout << "Tag possible positions:\n";
 		for ( size_t i = 0; i < result.NumPossibleTagPositions(); i++ )
@@ -66,6 +74,7 @@ bool RTLS::Run()
 
 		// TODO: May need to be byteswapped, or write in text format
 		mUartInterface.Write( bestPos );
+		mAnalogInterface.Write( bestPos );
 		mWebSocketInterface.Write( bestPos );
 	}
 
