@@ -34,6 +34,8 @@ bool MockTag::ReadDistanceData()
 		anchor.SetDistance( Vec3::Distance( anchor.GetPosition(), mTagPosition ) );
 		anchor.SetLastUpdatedTimestamp( mLastUpdate );
 	}
+
+	return true;
 }
 
 size_t MockTag::CollectAnchorPositionsAndDistances( Vec3* anchorPositions, float* anchorDistances ) const
