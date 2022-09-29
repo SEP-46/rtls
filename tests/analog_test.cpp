@@ -25,7 +25,7 @@ TEST(AnalogTest, CanTranslate)
 	float value = 0.5f;
 	testAnalog.SetRange(testRangeMin, testRangeMax);
 
-	EXPECT_FLOAT_EQ(testAnalog.Translate(value, testRangeMin.x, testRangeMax.x), 487.5);
-	EXPECT_FLOAT_EQ(testAnalog.Translate(value, testRangeMin.y, testRangeMax.y), 511.875);
-	EXPECT_FLOAT_EQ(testAnalog.Translate(value, testRangeMin.z, testRangeMax.z), 499.3902439024);
+	EXPECT_FLOAT_EQ(testAnalog.Translate(value, testRangeMin.x, testRangeMax.x), 487.5f);
+	EXPECT_FLOAT_EQ(testAnalog.Translate(value, testRangeMin.y, testRangeMax.y), 511.875f);
+	EXPECT_FLOAT_EQ(testAnalog.Translate(value, testRangeMin.z, testRangeMax.z), 499.3902439024f);
 }
