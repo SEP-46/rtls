@@ -1,10 +1,10 @@
-body{
-    background-color: darkgrey
+body {
+    background-color: darkgrey;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-columns: auto auto;
     gap: 10px;
     background-color: #2196F3;
     padding: 10px;
@@ -13,10 +13,10 @@ body{
 .grid-container > div {
     background-color: rgba(255, 255, 255, 0.8);
     text-align: center;
-    padding: 20px 0;
-    font-size: 30px;
+    padding: 15px 0;
+    font-size: 15px;
 }
 
-.item1 {
-    grid-column: 1 / 5;
+.grid1 {
+    grid-area: 1 / 1 / span 2 / span 2;
 }

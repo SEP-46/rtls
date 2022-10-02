@@ -6,36 +6,9 @@
     <meta name="description" content="This is the source code for our rtls program's web client" />
     <meta name="keywords" content="Swinburne University of Technology, SWE" />
     <meta name="author" content="Michael Woodrow, Rami Nouri, Fadal Farouk" />
-    <!--<link rel="stylesheet" href="styles.css">-->
-    
-    
-    <!--Inline Styles-->
-    <style>
-        body {
-            background-color: darkgrey
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: auto auto;
-            gap: 10px;
-            background-color: #2196F3;
-            padding: 10px;
-        }
-
-            .grid-container > div {
-                background-color: rgba(255, 255, 255, 0.8);
-                text-align: center;
-                padding: 20px 0;
-                font-size: 30px;
-            }
-
-        .item1 {
-            grid-area: 2 / 1 / span 2 / span 3;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css" />
 </head>
-
+<!----------------------------------------------------------------------------------------------------------------------->
 
 
 
@@ -43,30 +16,49 @@
 <body>
     <h1>Real-time Loaction Systems</h1>
     <h1>Web Client</h1>
-    
-    
+
+
     <div class="grid-container">
 
         <!--Grid 1: Map grid-->
-        <div class="grid-item">1</div>
+        <div class="grid1">1</div>
 
         <!--Grid 2-->
         <div class="grid-item">
-            <div class="grid-container">
-                <div class="grid-item"></div>
-                <div class="grid-item">X</div>
-                <div class="grid-item">Y</div>
-                <div class="grid-item">Z</div>
-                <div class="grid-item">T0</div>
-                <div class="grid-item"><output></output></div>
-                <div class="grid-item"><output></output></div>
-                <div class="grid-item"><output></output></div>
+            <div>
+                <div></div>
+                <div>X</div>
+                <div>Y</div>
+                <div>Z</div>
+                <div>T0</div>
+                <div><output>OutputXT0</output></div>
+                <div><output>OutputYT0</output></div>
+                <div><output>OutputZT0</output></div>
             </div>
 
             <form>
                 Speed <output>x</output>
                 Direction <output>x</output>
             </form>
+
+            <div>
+                <div></div>
+                <div>X</div>
+                <div>Y</div>
+                <div>Z</div>
+                <div>A0</div>
+                <div><output>OutputXT0</output></div>
+                <div><output>OutputYT0</output></div>
+                <div><output>OutputZT0</output></div>
+                <div>A1</div>
+                <div><output>OutputXT0</output></div>
+                <div><output>OutputYT0</output></div>
+                <div><output>OutputZT0</output></div>
+                <div>A2</div>
+                <div><output>OutputXT0</output></div>
+                <div><output>OutputYT0</output></div>
+                <div><output>OutputZT0</output></div>
+            </div>
 
         </div>
 
