@@ -18,14 +18,14 @@
     <h1>Web Client</h1>
 
 
-    <div class="grid-container">
+    <div class="MainGridContainer">
 
         <!--Grid 1: Map grid-->
         <div class="grid1">1</div>
 
         <!--Grid 2-->
-        <div class="grid-item">
-            <div>
+        <div>
+            <div class="TagOutputGrid">
                 <div></div>
                 <div>X</div>
                 <div>Y</div>
@@ -41,33 +41,39 @@
                 Direction <output>x</output>
             </form>
 
-            <div>
+            <div class="AnchorOutputGrid">
                 <div></div>
                 <div>X</div>
                 <div>Y</div>
                 <div>Z</div>
                 <div>A0</div>
-                <div><output>OutputXT0</output></div>
-                <div><output>OutputYT0</output></div>
-                <div><output>OutputZT0</output></div>
+                <div><output>OutputXA0</output></div>
+                <div><output>OutputYA0</output></div>
+                <div><output>OutputZA0</output></div>
                 <div>A1</div>
-                <div><output>OutputXT0</output></div>
-                <div><output>OutputYT0</output></div>
-                <div><output>OutputZT0</output></div>
+                <div><output>OutputXA1</output></div>
+                <div><output>OutputYA1</output></div>
+                <div><output>OutputZA1</output></div>
                 <div>A2</div>
-                <div><output>OutputXT0</output></div>
-                <div><output>OutputYT0</output></div>
-                <div><output>OutputZT0</output></div>
+                <div><output>OutputXA2</output></div>
+                <div><output>OutputYA2</output></div>
+                <div><output>OutputZA2</output></div>
             </div>
 
         </div>
 
         <!--Grid 3: Input and Update Grid-->
-        <div class="grid-item">
-            3
-            <input type="button" value="Update" />
-        </div>
-
+        
+            <div class="TagOutputGrid">
+                <form>
+                <label for="LabelTagName">Tag Name:</label><br>
+                <input type="text" value="" />
+                <br>
+                <input type="button" value="Update" />
+                <input type="reset">
+                    </form>
+            </div>
+        
     </div>
 
 
