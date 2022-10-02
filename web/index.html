@@ -6,24 +6,90 @@
     <meta name="description" content="This is the source code for our rtls program's web client" />
     <meta name="keywords" content="Swinburne University of Technology, SWE" />
     <meta name="author" content="Michael Woodrow, Rami Nouri, Fadal Farouk" />
+    <!--<link rel="stylesheet" href="styles.css">-->
+    
+    
+    <!--Inline Styles-->
+    <style>
+        body {
+            background-color: darkgrey
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 10px;
+            background-color: #2196F3;
+            padding: 10px;
+        }
+
+            .grid-container > div {
+                background-color: rgba(255, 255, 255, 0.8);
+                text-align: center;
+                padding: 20px 0;
+                font-size: 30px;
+            }
+
+        .item1 {
+            grid-area: 2 / 1 / span 2 / span 3;
+        }
+    </style>
 </head>
+
+
+
+
+
 <body>
     <h1>Real-time Loaction Systems</h1>
-    <h1>Group 46</h1>
     <h1>Web Client</h1>
-    <h2>Anchor 0</h2>
-    <h2>Anchor 1</h2>
-    <h2>Anchor 2</h2>
-    <h2>Anchor 3</h2>
-    <input type="submit" value="Update" /> <!--Added in a update button for the form-->
-    <p>Success!</p>
-    <footer> <!--Basically to add whatever information relating to the web client-->>
-        <p>----------------------------------</p>
-        <p>Info</p>
-        <p>Anchor 1</p>
-        <p>Anchor 2</p>
-        <p>Anchor 3</p>
-        <p>Tag</p>
+    
+    
+    <div class="grid-container">
+
+        <!--Grid 1: Map grid-->
+        <div class="grid-item">1</div>
+
+        <!--Grid 2-->
+        <div class="grid-item">
+            <div class="grid-container">
+                <div class="grid-item"></div>
+                <div class="grid-item">X</div>
+                <div class="grid-item">Y</div>
+                <div class="grid-item">Z</div>
+                <div class="grid-item">T0</div>
+                <div class="grid-item"><output></output></div>
+                <div class="grid-item"><output></output></div>
+                <div class="grid-item"><output></output></div>
+            </div>
+
+            <form>
+                Speed <output>x</output>
+                Direction <output>x</output>
+            </form>
+
+        </div>
+
+        <!--Grid 3: Input and Update Grid-->
+        <div class="grid-item">
+            3
+            <input type="button" value="Update" />
+        </div>
+
+    </div>
+
+
+
+    <!--Basically to add whatever information relating to the web client-->
+    <h3>Info</h3>
+    <p>Anchors: A1, A2, A3...</p>
+    <p>tag = T0</p>
+    <p>Other related information</p>
+
+
+
+    <footer>
+        <p>RTLS Project | Final Year Project | Group 46 ©</p>
     </footer>
 </body>
 </html>
