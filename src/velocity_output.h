@@ -13,10 +13,10 @@ public:
 	SphereAngles GetDirection() const;
 	void TestPrintVelocity() const;
 private:
-	Vec3 mOldPos = { 0,0,0 };			// {x,y,z}
-	//Vec3 mSpeedVec3 = { 0,0,0 };		// {x',y',z'} - Not sure if needed
-	float mSpeedMag = 0;				// total speed (magnitude)
-	SphereAngles mDirection = { 0.0f, 0.0f };					// float theta, float phi
+	Vec3 mOldPos = { 0,0,0 };                     // {x,y,z}
+	//Vec3 mSpeedVec3 = { 0,0,0 };                // {x',y',z'} - Not sure if needed
+	float mSpeedMag = 0;                          // total speed (magnitude)
+	SphereAngles mDirection = { 0.0f, 0.0f };     // float theta, float phi
 	float mOldTimestampSeconds = 0;
 };
 

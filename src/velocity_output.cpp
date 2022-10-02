@@ -17,9 +17,24 @@ void VelocityOutputData::CalcVelocity(const Vec3& aLoc, Timestamp_t aNewTimestam
 	mOldTimestampSeconds = timestampSeconds;
 
 	// Direction {theta, phi}
-	float r = distance;
-	mDirection.theta = atan2(delta.y, delta.x);
-	mDirection.phi = acos(delta.z/r);
+	
+	if (delta.x != 0)
+	{
+		mDirection.theta = atan2(delta.y, delta.x);
+	}
+	else
+	{
+		mDirection.theta = 0.0;
+	}
+	
+	if (distance != 0)
+	{
+		mDirection.phi = acos(delta.z/distance);
+	}
+	else
+	{
+		mDirection.phi = 0.0;
+	}
 }
 
 float VelocityOutputData::GetSpeed() const
