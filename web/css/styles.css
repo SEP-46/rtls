@@ -1,0 +1,36 @@
+body {
+    background-color: darkgrey;
+}
+
+.grid1 {
+    grid-area: 1 / 1 / span 2 / span 2;
+}
+
+.MainGridContainer {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 5px;
+    background-color: #2196F3;
+    padding: 5px;
+}
+
+.MainGridContainer > div {
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 10px 0;
+    font-size: 15px;
+}
+
+.TagOutputGrid {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 10px;
+    padding: 10px;
+}
+
+.AnchorOutputGrid {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 10px;
+    padding: 10px;
+}

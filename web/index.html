@@ -6,24 +6,88 @@
     <meta name="description" content="This is the source code for our rtls program's web client" />
     <meta name="keywords" content="Swinburne University of Technology, SWE" />
     <meta name="author" content="Michael Woodrow, Rami Nouri, Fadal Farouk" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css" />
 </head>
+<!----------------------------------------------------------------------------------------------------------------------->
+
+
+
+
 <body>
     <h1>Real-time Loaction Systems</h1>
-    <h1>Group 46</h1>
     <h1>Web Client</h1>
-    <h2>Anchor 0</h2>
-    <h2>Anchor 1</h2>
-    <h2>Anchor 2</h2>
-    <h2>Anchor 3</h2>
-    <input type="submit" value="Update" /> <!--Added in a update button for the form-->
-    <p>Success!</p>
-    <footer> <!--Basically to add whatever information relating to the web client-->>
-        <p>----------------------------------</p>
-        <p>Info</p>
-        <p>Anchor 1</p>
-        <p>Anchor 2</p>
-        <p>Anchor 3</p>
-        <p>Tag</p>
+
+
+    <div class="MainGridContainer">
+
+        <!--Grid 1: Map grid-->
+        <div class="grid1">1</div>
+
+        <!--Grid 2-->
+        <div>
+            <div class="TagOutputGrid">
+                <div></div>
+                <div>X</div>
+                <div>Y</div>
+                <div>Z</div>
+                <div>T0</div>
+                <div><output>OutputXT0</output></div>
+                <div><output>OutputYT0</output></div>
+                <div><output>OutputZT0</output></div>
+            </div>
+
+            <form>
+                Speed <output>x</output>
+                Direction <output>x</output>
+            </form>
+
+            <div class="AnchorOutputGrid">
+                <div></div>
+                <div>X</div>
+                <div>Y</div>
+                <div>Z</div>
+                <div>A0</div>
+                <div><output>OutputXA0</output></div>
+                <div><output>OutputYA0</output></div>
+                <div><output>OutputZA0</output></div>
+                <div>A1</div>
+                <div><output>OutputXA1</output></div>
+                <div><output>OutputYA1</output></div>
+                <div><output>OutputZA1</output></div>
+                <div>A2</div>
+                <div><output>OutputXA2</output></div>
+                <div><output>OutputYA2</output></div>
+                <div><output>OutputZA2</output></div>
+            </div>
+
+        </div>
+
+        <!--Grid 3: Input and Update Grid-->
+        
+            <div class="TagOutputGrid">
+                <form>
+                <label for="LabelTagName">Tag Name:</label><br>
+                <input type="text" value="" />
+                <br>
+                <input type="button" value="Update" />
+                <input type="reset">
+                    </form>
+            </div>   
+    </div>
+
+
+
+    <!--Basically to add whatever information relating to the web client-->
+    <h3>Info</h3>
+    <p>Anchors: A1, A2, A3...</p>
+    <p>tag = T0</p>
+    <p>Other related information</p>
+
+
+
+    <footer>
+        <p>RTLS Project | Final Year Project | Group 46 ©</p>
     </footer>
 </body>
 </html>
