@@ -19,6 +19,8 @@ RTLS::RTLS()
 	{
 		mTag = std::make_unique<UWBTag>();
 	}
+
+	SetBounds( AABB( { 0.0f, 0.0f, 0.0f }, { 10.0f, 10.0f, 10.0f } ) );
 }
 
 bool RTLS::Run()
@@ -29,54 +31,22 @@ bool RTLS::Run()
 	Vec3 anchorPositions[MAX_ANCHORS];
 	float anchorDistances[MAX_ANCHORS];
 	size_t numAnchors = mTag->CollectAnchorPositionsAndDistances( anchorPositions, anchorDistances );
+	Timestamp_t timestamp = mTag->GetLastUpdatedTimestamp();
+
+	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( timestamp, anchorPositions, anchorDistances, numAnchors );
 	
-	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( anchorPositions, anchorDistances, numAnchors );
-	if ( !result.SolutionFound() )
-	{
-		std::cout << "Failed to find tag position!\n";
-		std::cout << "Anchors:\n";
-		for ( size_t i = 0; i < numAnchors; i++ )
-		{
-			std::cout << "\t{ " << anchorPositions[i].x << ", " << anchorPositions[i].y << ", " << anchorPositions->z << " }\n";
-		}
-		std::cout << "Distances:\n";
-		for ( size_t i = 0; i < numAnchors; i++ )
-		{
-			std::cout << "\t" << anchorDistances[i] << "m\n";
-		}
-	}
-	else
-	{
-		Vec3 bestPos = result.GetPossibleTagPosition( 0 );
-		
-		// TESTING ONLY
-		// mTestWave.x = 0.5f + 0.5f * cosf( mTestTime );
-		// mTestWave.y = 0.5f + 0.5f * sinf( mTestTime );
-		// std::cout << "Tag possible positions:\n";
-		// std::cout << "\t{ " << mTestWave.x << ", " << mTestWave.y << ", " << mTestWave.z << " }\n";
-		// mAnalogInterface.Write( mTestWave );
-		// mTestTime += 0.001;
+	std::cout << "Tag position: " << result.position.x << ", " << result.position.y << ", " << result.position.z << '\n';
+	std::cout << "Tag velocity: " << result.velocity.x << ", " << result.velocity.y << ", " << result.velocity.z << '\n';
 
-		std::cout << "Tag possible positions:\n";
-		for ( size_t i = 0; i < result.NumPossibleTagPositions(); i++ )
-		{
-			const Vec3& pos = result.GetPossibleTagPosition( i );
-			std::cout << "\t{ " << pos.x << ", " << pos.y << ", " << pos.z << " }\n";
-		
-			// For now, assume anchors are at z=0
-			// Tag is always above the anchors
-			if ( pos.z > 0 )
-				bestPos = pos;
-		}
+	const Vec3& pos = result.position;
 
-		mVelocityOutputData.CalcVelocity( bestPos, Util_GetCurrentTime() );
-		mVelocityOutputData.TestPrintVelocity();
+	mVelocityOutputData.CalcVelocity( pos, timestamp );
+	mVelocityOutputData.TestPrintVelocity();
 
-		// TODO: May need to be byteswapped, or write in text format
-		mUartInterface.Write( bestPos );
-		mAnalogInterface.Write( bestPos );
-		mWebSocketInterface.Write( bestPos );
-	}
+	// TODO: May need to be byteswapped, or write in text format
+	mUartInterface.Write( pos );
+	mAnalogInterface.Write( pos );
+	mWebSocketInterface.Write( pos );
 
 	return true;
 }
@@ -88,4 +58,10 @@ std::vector<Vec3> RTLS::GetAnchorPos()
 		Vec3(4, 5, 6),
 		Vec3(7, 8, 9),
 	};
+}
+
+void RTLS::SetBounds( const AABB& bounds )
+{
+	mTrilaterationSolver->SetBounds( bounds );
+	mAnalogInterface.SetBounds( bounds );
 }

@@ -18,9 +18,8 @@ TEST( TrilaterationBasic, BasicCase )
 	};
 
 	TrilaterationSolver_Basic solver;
-	TrilaterationResult result = solver.FindTagPosition( anchors, distances, 3 );
-	EXPECT_TRUE( result.SolutionFound() );
-	EXPECT_TRUE( Vec3::CloseEnough( result.GetPossibleTagPosition( 0 ), Vec3( 0.5f, 0.5f, 0.0f ) ) );
+	TrilaterationResult result = solver.FindTagPosition( Util_GetCurrentTime(), anchors, distances, 3 );
+	EXPECT_TRUE( Vec3::CloseEnough( result.position, Vec3( 0.5f, 0.5f, 0.0f ) ) );
 }
 
 TEST( TrilaterationBasic, NonIntersecting )
@@ -38,8 +37,8 @@ TEST( TrilaterationBasic, NonIntersecting )
 	};
 
 	TrilaterationSolver_Basic solver;
-	TrilaterationResult result = solver.FindTagPosition( anchors, distances, 3 );
-	EXPECT_TRUE( result.SolutionFound() );
+	TrilaterationResult result = solver.FindTagPosition( Util_GetCurrentTime(), anchors, distances, 3 );
+	EXPECT_TRUE( result.valid );
 }
 
 TEST( TrilaterationBasic, Colinear )
@@ -58,6 +57,6 @@ TEST( TrilaterationBasic, Colinear )
 	};
 
 	TrilaterationSolver_Basic solver;
-	TrilaterationResult result = solver.FindTagPosition( anchors, distances, 3 );
-	EXPECT_FALSE( result.SolutionFound() );
+	TrilaterationResult result = solver.FindTagPosition( Util_GetCurrentTime(), anchors, distances, 3 );
+	EXPECT_FALSE( result.valid );
 }

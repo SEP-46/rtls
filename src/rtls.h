@@ -1,5 +1,6 @@
 #pragma once
 
+#include "aabb.h"
 #include "analog_interface.h"
 #include "tag.h"
 #include "trilaterationsolver.h"
@@ -20,6 +21,8 @@ public:
 	std::vector<Vec3> GetAnchorPos();
 	void SetAnchorPos(int AnchorIndex, Vec3 position) {}
 	
+	void SetBounds( const AABB& bounds );
+	const AABB& GetBounds() { return mBounds; }
 
 private:
 	std::unique_ptr<Tag> mTag;
@@ -28,8 +31,5 @@ private:
 	AnalogInterface mAnalogInterface = AnalogInterface();
 	WebSocketInterface mWebSocketInterface = WebSocketInterface( 9002 );
 	VelocityOutputData mVelocityOutputData;
-	
-	// TESTING ONLY
-	// Vec3 mTestWave = { 0.0f, 0.0f, 0.0f };
-	// float mTestTime = 0.0f;
+	AABB mBounds;
 };

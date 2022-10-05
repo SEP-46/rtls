@@ -50,31 +50,17 @@ bool AnalogInterface::Read(Vec3* data)
 bool AnalogInterface::Write(const Vec3& data)
 {
 	// Sets the voltage to match to location data
-	gAnalog.set_dac_raw((uint16_t)Translate(data.x, mMinRange.x, mSpanRange.x), 1); // X location to Ch1
-	gAnalog.set_dac_raw((uint16_t)Translate(data.y, mMinRange.y, mSpanRange.y), 2); // Y location to Ch2
+	gAnalog.set_dac_raw((uint16_t)Translate(data.x, mBounds.mins.x, mBounds.maxs.x), 1); // X location to Ch1
+	gAnalog.set_dac_raw((uint16_t)Translate(data.y, mBounds.mins.y, mBounds.maxs.y), 2); // Y location to Ch2
 	
 	return true;
 }
 
 #endif
 
-Vec3 AnalogInterface::GetMinRange()
+float AnalogInterface::Translate(float aValue, float aMinRange, float aMaxRange)
 {
-	return mMinRange;
-}
-Vec3 AnalogInterface::GetMaxRange()
-{
-	return mMaxRange;
-}
-void AnalogInterface::SetRange(const Vec3& aMin, const Vec3& aMax)
-{
-	mMinRange = aMin;
-	mMaxRange = aMax;
-	mSpanRange = mMaxRange - mMinRange;
-}
-float AnalogInterface::Translate(float aValue, float aMinRange, float aSpanRange)
-{
-	float result = DAC_MIN_OUTPUT + (((aValue - aMinRange) / aSpanRange) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
+	float result = DAC_MIN_OUTPUT + (((aValue - aMinRange) / (aMaxRange - aMinRange)) * (DAC_MAX_OUTPUT - DAC_MIN_OUTPUT));
 	if (result < DAC_MIN_OUTPUT)
 	{
 		return DAC_MIN_OUTPUT;
