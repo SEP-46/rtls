@@ -86,6 +86,18 @@ bool UWBTag::ReadDistanceData()
 	return true;
 }
 
+Timestamp_t UWBTag::GetLastUpdatedTimestamp() const
+{
+	Timestamp_t timestamp = 0;
+	for ( size_t i = 0; i < mAnchorList.NumAnchors(); i++ )
+	{
+		const UWBAnchor& anchor = mAnchorList.GetAnchorByIndex( i );
+		if ( anchor.GetLastUpdatedTimestamp() > timestamp )
+			timestamp = anchor.GetLastUpdatedTimestamp();
+	}
+	return timestamp;
+}
+
 size_t UWBTag::CollectAnchorPositionsAndDistances( Vec3* anchorPositions, float* anchorDistances ) const
 {
 	for ( size_t i = 0; i < mAnchorList.NumAnchors(); i++ )

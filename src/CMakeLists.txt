@@ -1,4 +1,5 @@
 set(SRCS
+    aabb.h
     analog_interface.h
     analog_interface.cpp
     communication_interface.h

@@ -3,6 +3,7 @@
 #include <cmath>
 
 TrilaterationResult TrilaterationSolver_Basic::FindTagPosition(
+	Timestamp_t timestamp,
 	const Vec3* anchorPositions,
 	const float* anchorDistances,
 	size_t numAnchors )
@@ -33,12 +34,14 @@ TrilaterationResult TrilaterationSolver_Basic::FindTagPosition(
 	float b = 2 * ( Vec3::Dot( Lp, Ld ) - Vec3::Dot( Ld, P[0] ) );
 	float c = Lp.LengthSq() + P[0].LengthSq() - 2 * Vec3::Dot( P[0], Lp ) - D[0]*D[0];
 
+	Vec3 pos;
+
 	float discriminant = b*b - 4*a*c;;
 	if ( discriminant == 0 )
 	{
 		// Spheres only intersect in 1 point, so there is only 1 solution
 		float t = ( -b + sqrtf( discriminant ) ) / ( 2 * a );
-		return TrilaterationResult( { Lp + Ld * t } );
+		pos = { Lp + Ld * t };
 	}
 	else if ( discriminant > 0 )
 	{
@@ -46,16 +49,59 @@ TrilaterationResult TrilaterationSolver_Basic::FindTagPosition(
 		float t1 = ( -b + sqrtf( discriminant ) ) / ( 2 * a );
 		float t2 = ( -b - sqrtf( discriminant ) ) / ( 2 * a );
 
-		return TrilaterationResult( {
-			Lp + Ld * t1,
-			Lp + Ld * t2
-		} );
+		Vec3 pos1 = { Lp + Ld * t1 };
+		Vec3 pos2 = { Lp + Ld * t2 };
+		bool contains1 = mBounds.Contains( pos1 );
+		bool contains2 = mBounds.Contains( pos2 );
+
+		if ( (contains1 && contains2) ||
+			(!contains1 && !contains2) )
+		{
+			// Bad case! Can't discard either of the possibilities
+			// See if we can figure it out based on what is closer to last position
+			if ( mHasLastPos )
+			{
+				float dist1 = Vec3::DistanceSq( mLastPos, pos1 );
+				float dist2 = Vec3::DistanceSq( mLastPos, pos2 );
+
+				if ( dist1 <= dist2 )
+					pos = pos1;
+				else
+					pos = pos2;
+			}
+			else
+			{
+				// The worst case! Just guess the first possibility and hope it is right
+				pos = pos1;
+			}
+		}
+		else if ( contains1 )
+		{
+			pos = pos1;
+		}
+		else
+		{
+			pos = pos2;
+		}
 	}
 	else
 	{
 		// Spheres don't intersect at all
 		// An estimate solution can still be formed by ignoring the complex part of the equation
 		float t = ( -b ) / ( 2 * a );
-		return TrilaterationResult( { Lp + Ld * t } );
+		pos = { Lp + Ld * t };
 	}
+
+	Vec3 vel = { 0.0f, 0.0f, 0.0f };
+	if ( mHasLastPos )
+	{
+		float time = ( timestamp - mLastTimestamp ) / 1000.0f;
+		if ( time != 0.0f )
+			vel = (pos - mLastPos) / time;
+	}
+
+	mLastPos = pos;
+	mLastTimestamp = timestamp;
+
+	return { pos, vel };
 }
