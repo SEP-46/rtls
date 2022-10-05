@@ -4,11 +4,12 @@
 #include "uwb_tag.h"
 #include "mock_tag.h"
 #include "trilaterationsolver_basic.h"
+#include "trilaterationsolver_ekf.h"
 #include <iostream>
 
 RTLS::RTLS()
 {
-	mTrilaterationSolver = std::make_unique<TrilaterationSolver_Basic>();
+	mTrilaterationSolver = std::make_unique<TrilaterationSolver_EKF>();
 
 	const Settings& settings = GetSettings();
 	if ( settings.mock_tag )

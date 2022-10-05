@@ -3,6 +3,7 @@ set(TESTS
     matrix_test.cpp
     optparse_test.cpp
     trilaterationbasic_test.cpp
+    trilaterationekf_test.cpp
     uwb_anchor_test.cpp
     vector_test.cpp
     velocity_test.cpp

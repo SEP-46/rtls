@@ -19,6 +19,8 @@ set(SRCS
     trilaterationsolver.h
     trilaterationsolver_basic.cpp
     trilaterationsolver_basic.h
+    trilaterationsolver_ekf.cpp
+    trilaterationsolver_ekf.h
     uart_interface.cpp
     uart_interface.h
     util.cpp
