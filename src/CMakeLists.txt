@@ -6,6 +6,7 @@ set(SRCS
     lmh_serial.cpp
     lmh_serial.h
     mathlib.h
+    matrix.h
     mock_tag.cpp
     mock_tag.h
     optparse.h
