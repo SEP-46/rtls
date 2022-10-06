@@ -98,5 +98,7 @@ void StartWebServer(RTLS& rtls)
         res.set_content( response.dump(), "application/json" );
     } );
 
+    svr.set_mount_point( "/", "../../web" );
+
     svr.listen("localhost", 80);    //setting port to 80
 }
