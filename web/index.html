@@ -8,16 +8,13 @@
     <meta name="author" content="Michael Woodrow, Rami Nouri, Fadal Farouk" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css" />
+	<script src="scripts/output_data.js"></script>
 </head>
 <!----------------------------------------------------------------------------------------------------------------------->
-
-
-
 
 <body>
     <h1>Real-time Loaction Systems</h1>
     <h1>Web Client</h1>
-
 
     <div class="MainGridContainer">
 
@@ -26,41 +23,48 @@
 
         <!--Grid 2-->
         <div>
-            <div class="TagOutputGrid">
-                <div></div>
-                <div>X</div>
-                <div>Y</div>
-                <div>Z</div>
-                <div>T0</div>
-                <div><output>OutputXT0</output></div>
-                <div><output>OutputYT0</output></div>
-                <div><output>OutputZT0</output></div>
-            </div>
-
             <form>
-                Speed <output>x</output>
-                Direction <output>x</output>
+                <div>
+				
+				T0
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				Speed
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				Direction
+				
+				</div>
+				
+				<output id="TagPosOutput">{x,y,z}</output>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<output id="TagSpeedOutput">{M}</output>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<output id="TagDirectionOutput">{theta,phi}</output>
+				
             </form>
 
             <div class="AnchorOutputGrid">
-                <div></div>
-                <div>X</div>
-                <div>Y</div>
-                <div>Z</div>
-                <div>A0</div>
-                <div><output>OutputXA0</output></div>
-                <div><output>OutputYA0</output></div>
-                <div><output>OutputZA0</output></div>
-                <div>A1</div>
-                <div><output>OutputXA1</output></div>
-                <div><output>OutputYA1</output></div>
-                <div><output>OutputZA1</output></div>
-                <div>A2</div>
-                <div><output>OutputXA2</output></div>
-                <div><output>OutputYA2</output></div>
-                <div><output>OutputZA2</output></div>
+			
+                <div>A0
+				&nbsp;&nbsp;
+				<output id="A0PosOutput">{x,y,z}</output></div>
+				<div></div><div></div><div></div>
+				
+                <div>A1
+				&nbsp;&nbsp;
+				<output id="A1PosOutput">{x,y,z}</output></div>
+				<div></div><div></div><div></div>
+				
+                <div>A2
+				&nbsp;&nbsp;
+				<output id="A2PosOutput">{x,y,z}</output></div>
+				
+				<input type="button" value="Testing" id="clickme" />
+				
             </div>
-
         </div>
 
         <!--Grid 3: Input and Update Grid-->
@@ -84,11 +88,10 @@
     <p>tag = T0</p>
     <p>Other related information</p>
 
-
-
     <footer>
         <p>RTLS Project | Final Year Project | Group 46 ©</p>
     </footer>
+
 </body>
 </html>
 
