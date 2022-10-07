@@ -1,16 +1,19 @@
 #include "rtls.h"
 
+#include "analog_interface.h"
+#include "uart_interface.h"
+#include "websocket_interface.h"
 #include "settings.h"
 #include "uwb_tag.h"
 #include "mock_tag.h"
 #include "trilaterationsolver_basic.h"
+#include "trilaterationsolver_builtin.h"
 #include "trilaterationsolver_ekf.h"
 #include <iostream>
+#include <filesystem>
 
 RTLS::RTLS()
 {
-	mTrilaterationSolver = std::make_unique<TrilaterationSolver_EKF>();
-
 	const Settings& settings = GetSettings();
 	if ( settings.mock_tag )
 	{
@@ -21,7 +24,34 @@ RTLS::RTLS()
 		mTag = std::make_unique<UWBTag>();
 	}
 
-	SetBounds( AABB( { 0.0f, 0.0f, 0.0f }, { 10.0f, 10.0f, 10.0f } ) );
+	Config cfg;
+	if ( !settings.config_file.empty() )
+	{
+		cfg = LoadConfig( settings.config_file.c_str() );
+	}
+	else if ( std::filesystem::exists( "config.json" ) )
+	{
+		cfg = LoadConfig( "config.json" );
+	}
+	else
+	{
+		cfg.trilaterationType = TrilaterationSolverType::BASIC;
+
+		OutputConfig output;
+		output.type = OutputType::WEBSOCKET;
+		output.websocket.port = 9002;
+		cfg.outputs.push_back( output );
+
+		cfg.bounds.mins = { 0.0f, 0.0f, 0.0f };
+		cfg.bounds.maxs = { 10.0f, 10.0f, 10.0f };
+	}
+
+	ApplyConfig( cfg );
+}
+
+RTLS::~RTLS()
+{
+	SaveConfig();
 }
 
 bool RTLS::Run()
@@ -31,7 +61,18 @@ bool RTLS::Run()
 
 	Vec3 anchorPositions[MAX_ANCHORS];
 	float anchorDistances[MAX_ANCHORS];
-	size_t numAnchors = mTag->CollectAnchorPositionsAndDistances( anchorPositions, anchorDistances );
+	std::vector<AnchorDistanceMeasurement> measurements = mTag->CollectAnchorDistances();
+	size_t numAnchors = measurements.size();
+	for ( size_t i = 0; i < measurements.size(); i++ )
+	{
+		const AnchorDistanceMeasurement& measurement = measurements[i];
+		AnchorConfig* anchorConfig = FindAnchorConfigById( measurement.id );
+		if ( !anchorConfig )
+			anchorConfig = AddAnchorToConfig( measurement.id, "A" + std::to_string( measurement.id ), { 0.0f, 0.0f, 0.0f } );
+
+		anchorPositions[i] = anchorConfig->pos;
+		anchorDistances[i] = measurement.distance;
+	}
 	Timestamp_t timestamp = mTag->GetLastUpdatedTimestamp();
 
 	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( timestamp, anchorPositions, anchorDistances, numAnchors );
@@ -44,25 +85,124 @@ bool RTLS::Run()
 	mVelocityOutputData.CalcVelocity( pos, timestamp );
 	mVelocityOutputData.TestPrintVelocity();
 
-	// TODO: May need to be byteswapped, or write in text format
-	mUartInterface.Write( pos );
-	mAnalogInterface.Write( pos );
-	mWebSocketInterface.Write( pos );
+	for ( const auto& output : mOutputInterfaces )
+	{
+		output->Write( pos );
+	}
 
 	return true;
 }
 
-std::vector<Vec3> RTLS::GetAnchorPos()
+std::string RTLS::GetTagName() const
 {
-	return {
-		Vec3(1, 2, 3),
-		Vec3(4, 5, 6),
-		Vec3(7, 8, 9),
-	};
+	return mConfig.tag.name;
+}
+
+void RTLS::SetTagName( const std::string& name )
+{
+	mConfig.tag.name = name;
+	SaveConfig();
+}
+
+std::vector<AnchorConfig> RTLS::GetAnchors() const
+{
+	return mConfig.anchors;
+}
+
+bool RTLS::SetAnchorName( NodeId_t id, const std::string& name )
+{
+	AnchorConfig* anchorConfig = FindAnchorConfigById( id );
+	if ( !anchorConfig )
+		return false;
+	anchorConfig->name = name;
+
+	SaveConfig();
+	return true;
+}
+
+bool RTLS::SetAnchorPos( NodeId_t id, const Vec3& pos )
+{
+	AnchorConfig* anchorConfig = FindAnchorConfigById( id );
+	if ( !anchorConfig )
+		return false;
+	anchorConfig->pos = pos;
+
+	SaveConfig();
+	return true;
+}
+
+void RTLS::ApplyConfig( const Config& cfg )
+{
+	mConfig = cfg;
+
+	if ( cfg.trilaterationType == TrilaterationSolverType::BASIC )
+		mTrilaterationSolver = std::make_unique<TrilaterationSolver_Basic>();
+	else if ( cfg.trilaterationType == TrilaterationSolverType::BUILTIN )
+		mTrilaterationSolver = std::make_unique<TrilaterationSolver_Builtin>( mTag.get() );
+
+	for ( const OutputConfig& output : cfg.outputs )
+	{
+		std::unique_ptr<CommunicationInterface> interface;
+		if ( output.type == OutputType::UART )
+		{
+			if ( !output.uart.portName.empty() )
+				interface = std::make_unique<UartInterface>( output.uart.portName.c_str() );
+			else
+				interface = std::make_unique<UartInterface>( output.uart.portIndex );
+		}
+		else if ( output.type == OutputType::ANALOG )
+		{
+			auto analog = std::make_unique<AnalogInterface>();
+			analog->SetBounds( mConfig.bounds );
+			interface = std::move( analog );
+		}
+		else if ( output.type == OutputType::WEBSOCKET )
+		{
+			interface = std::make_unique<WebSocketInterface>( output.websocket.port );
+		}
+
+		mOutputInterfaces.push_back( std::move( interface ) );
+	}
+
+	mTrilaterationSolver->SetBounds( mConfig.bounds );
+}
+
+void RTLS::SaveConfig()
+{
+	::SaveConfig( mConfig, "config.json" );
+}
+
+AnchorConfig* RTLS::FindAnchorConfigById( NodeId_t id )
+{
+	for ( AnchorConfig& anchor : mConfig.anchors )
+	{
+		if ( anchor.id == id )
+			return &anchor;
+	}
+	return nullptr;
+}
+
+AnchorConfig* RTLS::AddAnchorToConfig( NodeId_t id, const std::string& name, const Vec3& pos )
+{
+	AnchorConfig anchor;
+	anchor.id = id;
+	anchor.name = name;
+	anchor.pos = pos;
+	mConfig.anchors.push_back( anchor );
+	return &mConfig.anchors.back();
 }
 
 void RTLS::SetBounds( const AABB& bounds )
 {
 	mTrilaterationSolver->SetBounds( bounds );
-	mAnalogInterface.SetBounds( bounds );
+	for ( std::unique_ptr<CommunicationInterface>& output : mOutputInterfaces )
+	{
+		if ( auto* analog = dynamic_cast<AnalogInterface*>(output.get()) )
+		{
+			analog->SetBounds( bounds );
+		}
+	}
+
+	mConfig.bounds = bounds;
+	SaveConfig();
 }

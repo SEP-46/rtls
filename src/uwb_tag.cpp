@@ -17,6 +17,14 @@ UWBTag::~UWBTag()
 	dwm_deinit();
 }
 
+NodeId_t UWBTag::GetId() const
+{
+	NodeId_t id;
+	if ( dwm_panid_get( &id ) != RV_OK )
+		return NODE_ID_INVALID;
+	return id;
+}
+
 bool UWBTag::ReadDistanceData()
 {
 	dwm_status_t status;
@@ -30,13 +38,17 @@ bool UWBTag::ReadDistanceData()
 	assert( ret == RV_OK );
 	assert( loc.anchors.dist.cnt == loc.anchors.an_pos.cnt );
 
+	mBuiltinPos.x = pos.x / 1000.0f;
+	mBuiltinPos.y = pos.y / 1000.0f;
+	mBuiltinPos.z = pos.z / 1000.0f;
+
 	Timestamp_t timestamp = Util_GetCurrentTime();
 
 	bool anchorConnected[MAX_ANCHORS] = {};
 
 	for ( uint8_t i = 0; i < loc.anchors.dist.cnt; i++ )
 	{
-		UWBAnchorId_t id = loc.anchors.dist.addr[i];
+		NodeId_t id = loc.anchors.dist.addr[i];
 		int anchorIndex = mAnchorList.FindAnchorIndexById( id );
 
 		UWBAnchor* anchor;
@@ -98,14 +110,22 @@ Timestamp_t UWBTag::GetLastUpdatedTimestamp() const
 	return timestamp;
 }
 
-size_t UWBTag::CollectAnchorPositionsAndDistances( Vec3* anchorPositions, float* anchorDistances ) const
+std::vector<AnchorDistanceMeasurement> UWBTag::CollectAnchorDistances() const
 {
+	std::vector<AnchorDistanceMeasurement> measurements;
 	for ( size_t i = 0; i < mAnchorList.NumAnchors(); i++ )
 	{
 		const UWBAnchor& anchor = mAnchorList.GetAnchorByIndex( i );
-		anchorPositions[i] = anchor.GetPosition();
-		anchorDistances[i] = anchor.GetDistance();
+		AnchorDistanceMeasurement measurement;
+		measurement.id = anchor.GetId();
+		measurement.distance = anchor.GetDistance();
+		measurements.push_back( measurement );
 	}
-	return mAnchorList.NumAnchors();
+	return measurements;
+}
+
+Vec3 UWBTag::GetBuiltinPosition() const
+{
+	return mBuiltinPos;
 }
 

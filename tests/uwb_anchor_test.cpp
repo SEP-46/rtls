@@ -5,7 +5,7 @@
 TEST( UWBAnchorTest, DefaultIdIsInvalid )
 {
     UWBAnchor a;
-    EXPECT_EQ( a.GetId(), UWB_ANCHOR_ID_INVALID );
+    EXPECT_EQ( a.GetId(), NODE_ID_INVALID );
 }
 
 TEST( UWBAnchorTest, CanSetId )

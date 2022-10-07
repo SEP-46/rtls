@@ -38,14 +38,22 @@ bool MockTag::ReadDistanceData()
 	return true;
 }
 
-size_t MockTag::CollectAnchorPositionsAndDistances( Vec3* anchorPositions, float* anchorDistances ) const
+std::vector<AnchorDistanceMeasurement> MockTag::CollectAnchorDistances() const
 {
+	std::vector<AnchorDistanceMeasurement> measurements;
 	for ( size_t i = 0; i < mAnchorList.NumAnchors(); i++ )
 	{
 		const UWBAnchor& anchor = mAnchorList.GetAnchorByIndex( i );
-		anchorPositions[i] = anchor.GetPosition();
-		anchorDistances[i] = anchor.GetDistance();
+		AnchorDistanceMeasurement measurement;
+		measurement.id = anchor.GetId();
+		measurement.distance = anchor.GetDistance();
+		measurements.push_back( measurement );
 	}
-	return mAnchorList.NumAnchors();
+	return measurements;
+}
+
+Vec3 MockTag::GetBuiltinPosition() const
+{
+	return mTagPosition;
 }
 
