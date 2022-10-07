@@ -1,6 +1,6 @@
 #include "uwb_anchor.h"
 
-UWBAnchor& UWBAnchorList::AddAnchor( UWBAnchorId_t id )
+UWBAnchor& UWBAnchorList::AddAnchor( NodeId_t id )
 {
 	assert( mNumAnchors < MAX_ANCHORS );
 
@@ -18,7 +18,7 @@ void UWBAnchorList::RemoveAnchorByIndex( size_t index )
 	mNumAnchors--;
 }
 
-int UWBAnchorList::FindAnchorIndexById( UWBAnchorId_t id )
+int UWBAnchorList::FindAnchorIndexById( NodeId_t id )
 {
 	for ( size_t i = 0; i < mNumAnchors; i++ )
 	{
@@ -28,7 +28,7 @@ int UWBAnchorList::FindAnchorIndexById( UWBAnchorId_t id )
 	return -1;
 }
 
-UWBAnchor* UWBAnchorList::FindAnchorById( UWBAnchorId_t id )
+UWBAnchor* UWBAnchorList::FindAnchorById( NodeId_t id )
 {
 	for ( size_t i = 0; i < mNumAnchors; i++ )
 	{

@@ -16,74 +16,87 @@ void StartWebServer(RTLS& rtls)
         res.set_content("Hello World!", "text/plain");
     });
 
-    svr.Get("/anchors", [&](const Request& req, Response& res) {
-        auto positions = rtls.GetAnchorPos();
+    svr.Get( "/tag", [&]( const Request& req, Response& res ) {
+        json tagJson;
+        tagJson["name"] = rtls.GetTagName();
 
-        std::ostringstream ss;
-        for (const Vec3& pos : positions)
+        res.set_content( tagJson.dump(), "application/json" );
+    });
+
+    svr.Get("/anchors", [&](const Request& req, Response& res) {
+        auto anchors = rtls.GetAnchors();
+
+        json anchorsJson = json::array();
+        for (const AnchorConfig& anchor : anchors)
         {
-            ss << pos.x << ',' << pos.y << ',' << pos.y << '\n';
+            json anchorJson;
+            anchorJson["id"] = anchor.id;
+            anchorJson["name"] = anchor.name;
+            json pos;
+            pos["x"] = anchor.pos.x;
+            pos["y"] = anchor.pos.y;
+            pos["z"] = anchor.pos.z;
+            anchorsJson.push_back(std::move(anchorJson));
         }
 
-        res.set_content(ss.str(), "text/plain");
+        res.set_content(anchorsJson.dump(), "application/json");
     });
 
+    svr.Put(R"(/anchors/\d+)", [&](const Request& req, Response& res) {
+        NodeId_t id = (NodeId_t)std::stoi( req.matches[1].str() );
 
-    //setting anchor 0
-    svr.Put("/anchors/0", [&](const Request& req, Response& res) {      
-        json data = json::parse(req.body);      //gets xyz data
-        Vec3 position;      //create a vector
-        position.x = data["x"];
-        position.y = data["y"];
-        position.z = data["z"];
+        json data = json::parse(req.body);
+        Vec3 pos;
+        pos.x = data["x"];
+        pos.y = data["y"];
+        pos.z = data["z"];
 
-        rtls.SetAnchorPos(0, position);
+        if ( !rtls.SetAnchorPos( id, pos ) || !rtls.SetAnchorName( id, data["name"] ) )
+        {
+            json response;
+            response["status"] = "error";
+            res.status = 400;
+            res.set_content( response.dump(), "application/json" );
+        }
 
-        res.set_content("Success!", "text/plain");
-
-    });
-    
-    //setting anchor 1
-    svr.Put("/anchors/1", [&](const Request& req, Response& res) {
-        json data = json::parse(req.body);      //gets xyz data
-        Vec3 position;      //create a vector
-        position.x = data["x"];
-        position.y = data["y"];
-        position.z = data["z"];
-
-        rtls.SetAnchorPos(1, position);
-
-        res.set_content("Success!", "text/plain");
-
+        json response;
+        response["status"] = "success";
+        res.set_content(response.dump(), "application/json");
     });
 
-    //setting anchor 2
-    svr.Put("/anchors/2", [&](const Request& req, Response& res) {
-        json data = json::parse(req.body);      //gets xyz data
-        Vec3 position;      //create a vector
-        position.x = data["x"];
-        position.y = data["y"];
-        position.z = data["z"];
+    svr.Get("/bounds", [&](const Request& req, Response& res) {
+        const AABB& bounds = rtls.GetBounds();
 
-        rtls.SetAnchorPos(2, position);
+        json mins;
+        mins["x"] = bounds.mins.x;
+        mins["y"] = bounds.mins.y;
+        mins["z"] = bounds.mins.z;
+        json maxs;
+        maxs["x"] = bounds.maxs.x;
+        maxs["y"] = bounds.maxs.y;
+        maxs["z"] = bounds.maxs.z;
+        json boundsJson;
+        boundsJson["mins"] = std::move( mins );
+        boundsJson["maxs"] = std::move( maxs );
 
-        res.set_content("Success!", "text/plain");
-
+        res.set_content( boundsJson.dump(), "application/json" );
     });
 
-    //setting anchor 3
-    svr.Put("/anchors/3", [&](const Request& req, Response& res) {
-        json data = json::parse(req.body);      //gets xyz data
-        Vec3 position;      //create a vector
-        position.x = data["x"];
-        position.y = data["y"];
-        position.z = data["z"];
+    svr.Put( "/bounds", [&]( const Request& req, Response& res ) {
+        json data = json::parse( req.body );
 
-        rtls.SetAnchorPos(3, position);
+        AABB bounds;
+        bounds.mins.x = data["mins"]["x"];
+        bounds.mins.y = data["mins"]["y"];
+        bounds.mins.z = data["mins"]["z"];
+        bounds.maxs.x = data["maxs"]["x"];
+        bounds.maxs.y = data["maxs"]["y"];
+        bounds.maxs.z = data["maxs"]["z"];
 
-        res.set_content("Success!", "text/plain");
-
-    });
+        json response;
+        response["status"] = "success";
+        res.set_content( response.dump(), "application/json" );
+    } );
 
     svr.listen("localhost", 80);    //setting port to 80
 }

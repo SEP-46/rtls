@@ -1,11 +1,22 @@
 #pragma once
 
+#include "node.h"
 #include "util.h"
 #include "vector.h"
+#include <vector>
+
+struct AnchorDistanceMeasurement
+{
+	NodeId_t id;
+	float distance;
+};
 
 class Tag
 {
 public:
+	// Gets the node ID of the connected tag
+	virtual NodeId_t GetId() const = 0;
+
 	// Reads new distance data from the tag, if available
 	// Returns whether any new distance data was available
 	virtual bool ReadDistanceData() = 0;
@@ -13,6 +24,8 @@ public:
 	virtual Timestamp_t GetLastUpdatedTimestamp() const = 0;
 
 	// Gets the latest positions/distances of all connected anchors
-	// Returns the number of anchors that we are connected to
-	virtual size_t CollectAnchorPositionsAndDistances( Vec3* anchorPositions, float* anchorDistances ) const = 0;
+	virtual std::vector<AnchorDistanceMeasurement> CollectAnchorDistances() const = 0;
+
+	// Gets the position of the tag using the MDEK1001 built-in location engine
+	virtual Vec3 GetBuiltinPosition() const = 0;
 };

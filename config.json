@@ -1,0 +1,23 @@
+{
+  "trilaterationType": "basic",
+  "outputs": [
+    {
+      "type": "uart",
+      "portIndex": 1
+    },
+    {
+      "type": "analog"
+    },
+    {
+      "type": "websocket",
+      "port": 9002
+    }
+  ],
+  "anchors": [
+    {
+      "id": 1234,
+      "name": "A0",
+      "pos": [1,2,3]
+    }
+  ]
+}

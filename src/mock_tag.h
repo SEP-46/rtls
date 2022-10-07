@@ -11,6 +11,8 @@ class MockTag : public Tag
 public:
 	MockTag();
 
+	NodeId_t GetId() const override { return (NodeId_t)-1; }
+
 	// Reads new distance data from the anchors, if available
 	// Returns whether any new distance data has been read from the anchors
 	bool ReadDistanceData() override;
@@ -19,7 +21,10 @@ public:
 
 	// Gets the latest positions/distances of all connected anchors
 	// Returns the number of anchors that we are connected to
-	virtual size_t CollectAnchorPositionsAndDistances( Vec3* anchorPositions, float* anchorDistances ) const override;
+	std::vector<AnchorDistanceMeasurement> CollectAnchorDistances() const override;
+
+	// Gets the position of the tag using the MDEK1001 built-in location engine
+	Vec3 GetBuiltinPosition() const override;
 
 private:
 	Timestamp_t mLastUpdate = 0;

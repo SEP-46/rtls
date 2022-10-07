@@ -1,8 +1,11 @@
 #pragma once
 
+#include <string>
+
 struct Settings
 {
 	bool mock_tag = false;
+	std::string config_file;
 };
 
 extern void InitSettings( int argc, const char* argv[] );
