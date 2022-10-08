@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Real-time Location Systems</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="This is the source code for our rtls program's web client" />
+    <meta name="keywords" content="Swinburne University of Technology, SWE" />
+    <meta name="author" content="Michael Woodrow, Rami Nouri, Fadal Farouk" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!--Meta tag to make web page responsive and compatible with other devices-->
+    <link rel="stylesheet" href="css/styles.css" />     <!--Linking .css styles into web page-->
+</head>
+<!----------------------------------------------------------------------------------------------------------------------->
+
+
+
+
+<body>
+    <h1>Real-time Loaction Systems</h1>
+    <h1>Web Client</h1>
+
+
+    <div class="MainGridContainer">
+
+        <!--Grid 1: Map grid-->
+        <div class="grid1">1</div>
+
+        <!--Grid 2-->
+        <div>
+            <form>
+                Tag Location <output id="TagOutput">xxxx,xxxx,xxxx</output>
+            </form>
+            <hr>
+            <form>
+                Speed <output id="SpeedOutput">xxxx</output>
+                <br>
+                Direction <output id="DirectionOutput">xxxx</output>
+            </form>
+            <hr>
+            <form>
+                Anchor Location <output id="AnchorOutput">xxxx,xxxx,xxxx</output>
+            </form>
+            
+
+        </div>
+
+        <!--Grid 3: Input and Update Grid-->
+
+        <div class="TagOutputGrid">
+            <form>
+                <label for="LabelTagName">Tag Name:</label><br>
+                <input type="text" value="" />
+                <br>
+
+                <p>Grid Area</p>
+                <div class="GridArea">
+                    <div></div>
+                    <div>Min</div>
+                    <div>Max</div>
+
+                    <div>X</div>
+                    <div><output id="MinX">X</output></div>
+                    <div><output id="MaxX">X</output></div>
+
+                    <div>Y</div>
+                    <div><output id="MinY">X</output></div>
+                    <div><output id="MaxY">X</output></div>
+
+                    <div>Z</div>
+                    <div><output id="MinZ">X</output></div>
+                    <div><output id="MaxZ">X</output></div>
+                </div>
+
+                <button class="Buttons" type="reset">Reset</button>
+                <button class="Buttons" type="button">Update</button>
+
+            </form>
+        </div>
+    </div>
+
+    
+
+    <!--Legend-->
+    <h3>About this web client</h3>
+    <p>Anchors: A1, A2, A3...</p>
+    <p>tag = T0</p>
+    <p>Other related information</p>
+
+
+    <hr>
+    <footer>
+        <p>RTLS Project | Final Year Project | Group 46 ©</p>
+    </footer>
+</body>
+</html>
+
