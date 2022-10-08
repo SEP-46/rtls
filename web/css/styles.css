@@ -1,25 +1,78 @@
+/*Body-------------------------------------------------------------------------------------*/
 body {
-    background-color: darkgrey;
+    background-color: #212121;
+    text-align: center;
+    font-palette:light;
+    color: #F6F7F9;
 }
 
-.grid1 {
-    grid-area: 1 / 1 / span 2 / span 2;
+
+/*Buttons-------------------------------------------------------------------------------------*/
+button,
+button::after{
+    -webkit-transition:all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
+button {
+    background:none;
+    cursor:pointer;
+    border:3px solid #00D8FF;
+    border-radius:5px;
+    color:#fff;
+    display:block;
+    font-size:0.5em;
+    font-weight:bold;
+    margin:1em auto;
+    padding:2em 6em;
+    position: relative;
+    text-transform:uppercase;
+}
+
+button:before,
+button::after {
+    background: #00D8FF;
+    content: '';
+    position: absolute;
+    z-index: -1;
+}
+
+button:hover{
+    color: #202435;
+}
+
+
+.Buttons::after{
+    height:0;
+    left:50%;
+    top:50%;
+    width:0%;
+}
+
+.Buttons:hover:after{
+    height:100%;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+/*Main Grid-------------------------------------------------------------------------------------*/
 .MainGridContainer {
     display: grid;
     grid-template-columns: auto auto;
     gap: 5px;
-    background-color: #2196F3;
+    background-color: #616161; /*Adjust color of grid border*/
     padding: 5px;
 }
 
-.MainGridContainer > div {
-    background-color: rgba(255, 255, 255, 0.8);
-    text-align: center;
-    padding: 10px 0;
-    font-size: 15px;
-}
+    .MainGridContainer > div {
+        background-color: #424242; /*Adjust color inside grid*/
+        text-align: center;
+        padding: 10px 0;
+        font-size: 15px;
+    }
 
 .TagOutputGrid {
     display: grid;
@@ -34,3 +87,18 @@ body {
     gap: 10px;
     padding: 10px;
 }
+
+.grid1 {
+    grid-area: 1 / 1 / span 2 / span 2;
+}
+
+.GridArea {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 10px;
+    padding: 10px;
+}
+
+
+
+
