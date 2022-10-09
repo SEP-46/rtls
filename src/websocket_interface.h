@@ -9,8 +9,7 @@ public:
 	WebSocketInterface( int port );
 	~WebSocketInterface();
 
-	virtual bool Read( Vec3* data ) override;
-	virtual bool Write( const Vec3& data ) override;
+	bool Write( const Vec3& pos, const Vec3& vel ) override;
 
 private:
 	std::unique_ptr<class PImpl> mImpl;

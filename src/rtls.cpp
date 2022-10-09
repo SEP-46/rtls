@@ -101,13 +101,14 @@ bool RTLS::Run()
 	std::cout << "Tag velocity: " << result.velocity.x << ", " << result.velocity.y << ", " << result.velocity.z << '\n';
 
 	const Vec3& pos = result.position;
+	const Vec3& vel = result.velocity;
 
 	mVelocityOutputData.CalcVelocity( pos, timestamp );
 	mVelocityOutputData.TestPrintVelocity();
 
 	for ( const auto& output : mOutputInterfaces )
 	{
-		output->Write( pos );
+		output->Write( pos, vel );
 	}
 
 	if ( mShouldLog )

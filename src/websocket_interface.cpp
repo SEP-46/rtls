@@ -1,7 +1,10 @@
 #include "websocket_interface.h"
 
 #include <ixwebsocket/IXWebSocketServer.h>
+#include <json.hpp>
 #include <sstream>
+
+using namespace nlohmann;
 
 class PImpl
 {
@@ -26,17 +29,27 @@ public:
 		mServer.start();
 	}
 
-	bool Write( const Vec3& data )
+	bool Write( const Vec3& pos, const Vec3& vel )
 	{
-		std::ostringstream ss;
-		ss << data.x << ',' << data.y << ',' << data.z;
-		std::string data_str = ss.str();
+		json data;
+
+		json posJson;
+		posJson["x"] = pos.x;
+		posJson["y"] = pos.y;
+		posJson["z"] = pos.z;
+		data["pos"] = posJson;
+
+		json velJson;
+		velJson["x"] = vel.x;
+		velJson["y"] = vel.y;
+		velJson["z"] = vel.z;
+		data["vel"] = velJson;
 
 		bool success = true;
 		auto clients = mServer.getClients();
 		for ( const auto& client : clients )
 		{
-			ix::WebSocketSendInfo res = client->send( data_str );
+			ix::WebSocketSendInfo res = client->send( data.dump() );
 			success &= res.success;
 		}
 
@@ -60,12 +73,7 @@ WebSocketInterface::~WebSocketInterface()
 	ix::uninitNetSystem();
 }
 
-bool WebSocketInterface::Read( Vec3* data )
+bool WebSocketInterface::Write( const Vec3& pos, const Vec3& vel )
 {
-	return false;
-}
-
-bool WebSocketInterface::Write( const Vec3& data )
-{
-	return mImpl->Write( data );
+	return mImpl->Write( pos, vel );
 }
