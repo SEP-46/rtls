@@ -1,6 +1,7 @@
 #pragma once
 
 #include "node.h"
+#include "uwb_anchor.h"
 #include "util.h"
 #include "vector.h"
 #include <vector>
@@ -25,6 +26,8 @@ public:
 
 	// Gets the latest positions/distances of all connected anchors
 	virtual std::vector<AnchorDistanceMeasurement> CollectAnchorDistances() const = 0;
+
+	virtual const UWBAnchorList& GetAnchorList() const = 0;
 
 	// Gets the position of the tag using the MDEK1001 built-in location engine
 	virtual Vec3 GetBuiltinPosition() const = 0;
