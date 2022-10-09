@@ -9,14 +9,19 @@
 #include <memory>
 #include <vector>
 
+struct Settings;
+
 class RTLS
 {
 public:
 	RTLS();
 	~RTLS();
 
+	void Init( const Settings& settings );
+
 	// Run loop, is called indefinitely until it returns false
 	bool Run();
+	void Stop();
 
 	std::string GetTagName() const;
 	void SetTagName( const std::string& name );
@@ -41,10 +46,24 @@ private:
 	AnchorConfig* FindAnchorConfigById( NodeId_t id );
 	AnchorConfig* AddAnchorToConfig( NodeId_t id, const std::string& name, const Vec3& pos );
 
+	void SaveLog();
+
 private:
 	std::unique_ptr<Tag> mTag;
 	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
 	std::vector<std::unique_ptr<CommunicationInterface>> mOutputInterfaces;
 	Config mConfig;
 	VelocityOutputData mVelocityOutputData;
+	
+	struct LogEntry
+	{
+		Timestamp_t timestamp;
+		Vec3 pos;
+		AnchorDistanceMeasurement measurements[MAX_ANCHORS];
+		size_t num_measurements;
+	};
+	std::vector<LogEntry> mLog;
+	bool mShouldLog = false;
+
+	bool mStopped = false;
 };

@@ -18,7 +18,7 @@ void UWBAnchorList::RemoveAnchorByIndex( size_t index )
 	mNumAnchors--;
 }
 
-int UWBAnchorList::FindAnchorIndexById( NodeId_t id )
+int UWBAnchorList::FindAnchorIndexById( NodeId_t id ) const
 {
 	for ( size_t i = 0; i < mNumAnchors; i++ )
 	{
@@ -28,7 +28,7 @@ int UWBAnchorList::FindAnchorIndexById( NodeId_t id )
 	return -1;
 }
 
-UWBAnchor* UWBAnchorList::FindAnchorById( NodeId_t id )
+const UWBAnchor* UWBAnchorList::FindAnchorById( NodeId_t id ) const
 {
 	for ( size_t i = 0; i < mNumAnchors; i++ )
 	{

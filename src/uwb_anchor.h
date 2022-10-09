@@ -51,8 +51,8 @@ public:
 	UWBAnchor& AddAnchor( NodeId_t id );
 	void RemoveAnchorByIndex( size_t index );
 
-	int FindAnchorIndexById( NodeId_t id );
-	UWBAnchor* FindAnchorById( NodeId_t id );
+	int FindAnchorIndexById( NodeId_t id ) const;
+	const UWBAnchor* FindAnchorById( NodeId_t id ) const;
 
 private:
 	UWBAnchor mAnchors[MAX_ANCHORS];

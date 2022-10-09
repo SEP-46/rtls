@@ -23,6 +23,8 @@ public:
 	// Returns the number of anchors that we are connected to
 	std::vector<AnchorDistanceMeasurement> CollectAnchorDistances() const override;
 
+	const UWBAnchorList& GetAnchorList() const override { return mAnchorList; }
+
 	// Gets the position of the tag using the MDEK1001 built-in location engine
 	Vec3 GetBuiltinPosition() const override;
 

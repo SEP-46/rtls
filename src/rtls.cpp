@@ -11,10 +11,20 @@
 #include "trilaterationsolver_ekf.h"
 #include <iostream>
 #include <filesystem>
+#include <fstream>
+
+using namespace std::string_literals;
 
 RTLS::RTLS()
 {
-	const Settings& settings = GetSettings();
+}
+
+RTLS::~RTLS()
+{
+}
+
+void RTLS::Init( const Settings& settings )
+{
 	if ( settings.mock_tag )
 	{
 		mTag = std::make_unique<MockTag>();
@@ -23,6 +33,8 @@ RTLS::RTLS()
 	{
 		mTag = std::make_unique<UWBTag>();
 	}
+
+	mShouldLog = settings.log;
 
 	Config cfg;
 	if ( !settings.config_file.empty() )
@@ -49,13 +61,11 @@ RTLS::RTLS()
 	ApplyConfig( cfg );
 }
 
-RTLS::~RTLS()
-{
-	SaveConfig();
-}
-
 bool RTLS::Run()
 {
+	if ( mStopped )
+		return false;
+
 	if ( !mTag->ReadDistanceData() )
 		return true;
 
@@ -67,8 +77,18 @@ bool RTLS::Run()
 	{
 		const AnchorDistanceMeasurement& measurement = measurements[i];
 		AnchorConfig* anchorConfig = FindAnchorConfigById( measurement.id );
+		AnchorConfig tagAnchorConfig;
 		if ( !anchorConfig )
-			anchorConfig = AddAnchorToConfig( measurement.id, "A" + std::to_string( measurement.id ), { 0.0f, 0.0f, 0.0f } );
+		{
+			const UWBAnchorList& anchors = mTag->GetAnchorList();
+			const UWBAnchor* anchor = anchors.FindAnchorById( measurement.id );
+			if ( !anchor )
+				return false;
+			tagAnchorConfig.id = anchor->GetId();
+			tagAnchorConfig.pos = anchor->GetPosition();
+			tagAnchorConfig.name = "A" + std::to_string( tagAnchorConfig.id );
+			anchorConfig = &tagAnchorConfig;
+		}
 
 		anchorPositions[i] = anchorConfig->pos;
 		anchorDistances[i] = measurement.distance;
@@ -90,7 +110,28 @@ bool RTLS::Run()
 		output->Write( pos );
 	}
 
+	if ( mShouldLog )
+	{
+		LogEntry entry;
+		entry.timestamp = timestamp;
+		entry.pos = pos;
+		entry.num_measurements = measurements.size();
+		for ( size_t i = 0; i < entry.num_measurements; i++ )
+		{
+			entry.measurements[i] = measurements[i];
+		}
+		mLog.push_back( entry );
+	}
+
 	return true;
+}
+
+void RTLS::Stop()
+{
+	mStopped = true;
+
+	SaveConfig();
+	SaveLog();
 }
 
 std::string RTLS::GetTagName() const
@@ -137,6 +178,8 @@ void RTLS::ApplyConfig( const Config& cfg )
 
 	if ( cfg.trilaterationType == TrilaterationSolverType::BASIC )
 		mTrilaterationSolver = std::make_unique<TrilaterationSolver_Basic>();
+	else if ( cfg.trilaterationType == TrilaterationSolverType::EKF )
+		mTrilaterationSolver = std::make_unique<TrilaterationSolver_EKF>();
 	else if ( cfg.trilaterationType == TrilaterationSolverType::BUILTIN )
 		mTrilaterationSolver = std::make_unique<TrilaterationSolver_Builtin>( mTag.get() );
 
@@ -190,6 +233,38 @@ AnchorConfig* RTLS::AddAnchorToConfig( NodeId_t id, const std::string& name, con
 	anchor.pos = pos;
 	mConfig.anchors.push_back( anchor );
 	return &mConfig.anchors.back();
+}
+
+void RTLS::SaveLog()
+{
+	time_t t = time( 0 );
+	struct tm* now = localtime( &t );
+
+	char datetime[80];
+	strftime( datetime, sizeof( datetime ), "%F_%H%M%S", now);
+
+	{
+		std::string filename = "output_log_"s + datetime + ".csv"s;
+		std::ofstream file( filename );
+		for ( const LogEntry& entry : mLog )
+		{
+			file << entry.timestamp << ',' << entry.pos.x << ',' << entry.pos.y << ',' << entry.pos.z << '\n';
+		}
+	}
+
+	{
+		std::string filename = "input_log_"s + datetime + ".csv"s;
+		std::ofstream file( filename );
+		for ( const LogEntry& entry : mLog )
+		{
+			file << entry.timestamp;
+			for ( size_t i = 0; i < entry.num_measurements; i++ )
+			{
+				file << ',' << entry.measurements[i].id << ',' << entry.measurements[i].distance;
+			}
+			file << '\n';
+		}
+	}
 }
 
 void RTLS::SetBounds( const AABB& bounds )

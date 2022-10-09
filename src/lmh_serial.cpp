@@ -6,7 +6,7 @@
 
 using namespace std::chrono_literals;
 
-static serial::Serial g_serial;
+static serial::Serial* g_serial;
 
 static const char* DEVICE_STRS[] = {
 	// For EVB1000
@@ -29,14 +29,16 @@ static const char* DEVICE_STRS[] = {
  */
 static void LMH_Serial_Init()
 {
-	g_serial.setBaudrate( 115200 );
-	g_serial.setBytesize( serial::eightbits );
-	g_serial.setParity( serial::parity_none );
-	g_serial.setStopbits( serial::stopbits_one );
-	g_serial.setFlowcontrol( serial::flowcontrol_none );
+	g_serial = new serial::Serial;
+
+	g_serial->setBaudrate( 115200 );
+	g_serial->setBytesize( serial::eightbits );
+	g_serial->setParity( serial::parity_none );
+	g_serial->setStopbits( serial::stopbits_one );
+	g_serial->setFlowcontrol( serial::flowcontrol_none );
 
 	auto timeout = serial::Timeout::simpleTimeout( 100 );
-	g_serial.setTimeout( timeout );
+	g_serial->setTimeout( timeout );
 
 	LMH_Log( "Waiting for connection to tag...\n" );
 
@@ -77,8 +79,8 @@ static void LMH_Serial_Init()
 	{
 		try
 		{
-			g_serial.setPort( evb_port );
-			g_serial.open();
+			g_serial->setPort( evb_port );
+			g_serial->open();
 		}
 		catch ( const std::exception& e )
 		{
@@ -101,7 +103,8 @@ static void LMH_Serial_Init()
  */
 static void LMH_Serial_DeInit( void )
 {
-	g_serial.close();
+	g_serial->close();
+	delete g_serial;
 }
 
 /**
@@ -114,11 +117,11 @@ static void LMH_Serial_DeInit( void )
  */
 static int LMH_Serial_Tx( uint8_t* data, uint8_t* length )
 {
-	if ( !g_serial.isOpen() )
+	if ( !g_serial->isOpen() )
 		return LMH_ERR;
 
 	size_t tx_length = *length;
-	size_t written = g_serial.write( data, tx_length );
+	size_t written = g_serial->write( data, tx_length );
 	return ( written == tx_length ) ? LMH_OK : LMH_ERR;
 }
 
@@ -140,10 +143,10 @@ static int LMH_Serial_Tx( uint8_t* data, uint8_t* length )
  */
 static int LMH_Serial_WaitForRx( uint8_t* data, uint16_t* length, uint16_t exp_length )
 {
-	if ( !g_serial.isOpen() )
+	if ( !g_serial->isOpen() )
 		return LMH_ERR;
 
-	*length = (uint16_t)g_serial.read( data, (size_t)exp_length );
+	*length = (uint16_t)g_serial->read( data, (size_t)exp_length );
 	return LMH_OK;
 }
 
