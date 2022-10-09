@@ -8,8 +8,7 @@ public:
 	UartInterface( int portIndex );
 	UartInterface( const char* portName );
 
-	virtual bool Read( Vec3* data ) override;
-	virtual bool Write( const Vec3& data ) override;
+	bool Write( const Vec3& pos, const Vec3& vel ) override;
 
 private:
 	void ConnectToPort( const char* portName );

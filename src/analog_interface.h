@@ -11,8 +11,7 @@ public:
 	AnalogInterface();
 	~AnalogInterface();
 
-	virtual bool Read( Vec3* data);
-	virtual bool Write( const Vec3& data);
+	bool Write( const Vec3& pos, const Vec3& vel ) override;
 
 	void SetBounds( const AABB& bounds ) { mBounds = bounds; }
 	float Translate(float aValue, float aMinRange, float aMaxRange);

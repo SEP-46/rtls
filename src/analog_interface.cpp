@@ -11,11 +11,7 @@ static constexpr uint16_t DAC_MIN_OUTPUT = 0;
 AnalogInterface::AnalogInterface(){}
 AnalogInterface::~AnalogInterface(){}
 
-bool AnalogInterface::Read(Vec3* data)
-{
-	return false;
-}
-bool AnalogInterface::Write(const Vec3& data)
+bool AnalogInterface::Write(const Vec3& pos, const Vec3& vel)
 {
 	return false;
 }
@@ -47,11 +43,11 @@ bool AnalogInterface::Read(Vec3* data)
 	return false;
 }
 
-bool AnalogInterface::Write(const Vec3& data)
+bool AnalogInterface::Write(const Vec3& pos, const Vec3& vel)
 {
 	// Sets the voltage to match to location data
-	gAnalog.set_dac_raw((uint16_t)Translate(data.x, mBounds.mins.x, mBounds.maxs.x), 1); // X location to Ch1
-	gAnalog.set_dac_raw((uint16_t)Translate(data.y, mBounds.mins.y, mBounds.maxs.y), 2); // Y location to Ch2
+	gAnalog.set_dac_raw((uint16_t)Translate(pos.x, mBounds.mins.x, mBounds.maxs.x), 1); // X location to Ch1
+	gAnalog.set_dac_raw((uint16_t)Translate(pos.y, mBounds.mins.y, mBounds.maxs.y), 2); // Y location to Ch2
 	
 	return true;
 }

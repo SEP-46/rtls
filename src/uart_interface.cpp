@@ -17,20 +17,12 @@ UartInterface::UartInterface( const char* portName )
 	ConnectToPort( portName );
 }
 
-bool UartInterface::Read( Vec3* data )
+bool UartInterface::Write( const Vec3& pos, const Vec3& vel )
 {
 	if ( !gSerial.isOpen() )
 		return 0;
 
-	return (int)gSerial.read( (uint8_t*)data, sizeof( Vec3 ) ) == sizeof( Vec3 );
-}
-
-bool UartInterface::Write( const Vec3& data )
-{
-	if ( !gSerial.isOpen() )
-		return 0;
-
-	return (int)gSerial.write( (const uint8_t*)&data, sizeof( Vec3 ) ) == sizeof( Vec3 );
+	return (int)gSerial.write( (const uint8_t*)&pos, sizeof( Vec3 ) ) == sizeof( Vec3 );
 }
 
 void UartInterface::ConnectToPort( const char* portName )
