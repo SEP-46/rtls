@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!--Meta tag to make web page responsive and compatible with other devices-->
     <link rel="stylesheet" href="css/styles.css" />     <!--Linking .css styles into web page-->
     <script src="scripts/output_data.js"></script>
+
 </head>
 <!----------------------------------------------------------------------------------------------------------------------->
 
@@ -23,7 +24,9 @@
     <div class="MainGridContainer">
 
         <!--Grid 1: Map grid-->
-        <div class="grid1">1</div>
+        <div class="grid1">
+            <canvas id="RTLSMap" width="200" height="100" style="border: 5px solid #00D8FF; background:antiquewhite "></canvas>
+        </div>
 
         <!--Grid 2-->
         <div>
@@ -75,29 +78,29 @@
                     <div>Max</div>
 
                     <div>X</div>
-                    <input type="text" value="X Min" />
-                    <input type="text" value="X Max" />
+                    <input type="text" placeholder="X Min" />
+                    <input type="text" placeholder="X Max" />
 
                     <div>Y</div>
-                    <input type="text" value="Y Min" />
-                    <input type="text" value="Y Max" />
+                    <input type="text" placeholder="Y Min" />
+                    <input type="text" placeholder="Y Max" />
 
                     <div>Z</div>
-                    <input type="text" value="Z Min" />
-                    <input type="text" value="Z Max" />
+                    <input type="text" placeholder="Z Min" />
+                    <input type="text" placeholder="Z Max" />
                 </div>
                 <hr>
                 <label for="Achor1Name">Anchor 1</label><br>
-                <input type="text" value="Anchor 1 Name" />
-                <input type="text" value="Coordinates" />
+                <input type="text" placeholder="Name" />
+                <input type="text" placeholder="Coordinates" />
                 <br>
                 <label for="Achor2Name">Anchor 2</label><br>
-                <input type="text" value="Anchor 2 Name" />
-                <input type="text" value="Coordinates" />
+                <input type="text" placeholder="Name" />
+                <input type="text" placeholder="Coordinates" />
                 <br>
                 <label for="Achor3Name">Anchor 3</label><br>
-                <input type="text" value="Anchor 3 Name" />
-                <input type="text" value="Coordinates" />
+                <input type="text" placeholder="Name" />
+                <input type="text" placeholder="Coordinates" />
                 <br>
                 <!--Buttons-->
                 <button class="Buttons" type="reset">Reset</button>
@@ -110,15 +113,16 @@
 
 
     <!--Legend-->
-    <h3>About this web client</h3>
-    <p>Anchors: A1, A2, A3...</p>
+    <h3>Legend</h3>
     <p>tag = T0</p>
     <p>Other related information</p>
 
 
     <hr>
     <footer>
-        <p>RTLS Project | Final Year Project | Group 46 ©</p>
+        <p>This RTLS program is a property of Swinburne University of Technology as part of a final year capstone for the unit Software Engineering Project A and B.</p>
+        <p>RTLS Project | Final Year Capstone | Group 46</p>
+        <p>Swinburne University of Technology 2022</p>
     </footer>
 </body>
 </html>
