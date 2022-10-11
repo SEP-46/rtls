@@ -77,6 +77,7 @@ function init()
 {
     const update = document.getElementById("update");
     update.onclick = updateInfo;
+    updateInfo();
 }
 
 window.onload = init;
