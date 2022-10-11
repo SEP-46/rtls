@@ -94,6 +94,8 @@ void StartWebServer(RTLS& rtls)
         bounds.maxs.y = data["maxs"]["y"];
         bounds.maxs.z = data["maxs"]["z"];
 
+        rtls.SetBounds( bounds );
+
         json response;
         response["status"] = "success";
         res.set_content( response.dump(), "application/json" );
