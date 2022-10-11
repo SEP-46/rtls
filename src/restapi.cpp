@@ -42,7 +42,7 @@ void StartWebServer(RTLS& rtls)
         res.set_content(anchorsJson.dump(), "application/json");
     });
 
-    svr.Put(R"(/anchors/\d+)", [&](const Request& req, Response& res) {
+    svr.Put(R"(/anchors/(\d+))", [&](const Request& req, Response& res) {
         NodeId_t id = (NodeId_t)std::stoi( req.matches[1].str() );
 
         json data = json::parse(req.body);
