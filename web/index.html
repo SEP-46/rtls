@@ -24,7 +24,7 @@
         <!--Grid 2-->
         <div>
             <p>
-            <form>
+            <div>
                 <b>Tag Location: </b><output id="TagPosOutput"> {x, y, z} </output> (m)
                 <br>
                 <br>
@@ -35,36 +35,12 @@
                 <br>
                 <br>
                 <!-- Direction <output id="TagDirectionOutput"> {theata, phi} </output> -->
-            </form>
-            </p>
-            <hr>
-            <form>
-            <br>
-            <u>Anchor Positions</u>
-            <br>
-                <output id="A0Name"> A0 </output>
-                <output id="A0PosOutput"> {x, y, z} </output> (m)
-                <br>
-                <output id="A1Name"> A1 </output>
-                <output id="A1PosOutput"> {x, y, z} </output> (m)
-                <br>
-                <output id="A2Name"> A2 </output>
-                <output id="A2PosOutput"> {x, y, z} </output> (m)
-            <br>
-            <br>
-            <u>Grid Layout</u>
-            <br>
-                Lower Bound: <output id="LowBound"> {x, y, z} </output> (m)
-                <br>
-                Upper Bound: <output id="UpBound"> {x, y, z} </output> (m)
-            </form>
-            
-
+            </div>
         </div>
 
         <!--Grid 3: Input and Update Grid-->
         <div class="TagOutputGrid">
-            <form>
+            <div>
                 <p>Grid Area</p>
                 <div class="GridArea">
                     <div></div>
@@ -72,35 +48,40 @@
                     <div>Max</div>
 
                     <div>X</div>
-                    <input type="text" placeholder="X Min" />
-                    <input type="text" placeholder="X Max" />
+                    <input id="BoundsMinX" type="text" placeholder="X Min" />
+                    <input id="BoundsMaxX" type="text" placeholder="X Max" />
 
                     <div>Y</div>
-                    <input type="text" placeholder="Y Min" />
-                    <input type="text" placeholder="Y Max" />
+                    <input id="BoundsMinY" type="text" placeholder="Y Min" />
+                    <input id="BoundsMaxY" type="text" placeholder="Y Max" />
 
                     <div>Z</div>
-                    <input type="text" placeholder="Z Min" />
-                    <input type="text" placeholder="Z Max" />
+                    <input id="BoundsMinZ" type="text" placeholder="Z Min" />
+                    <input id="BoundsMaxZ" type="text" placeholder="Z Max" />
                 </div>
                 <hr>
-                <label for="Achor1Name">Anchor 1</label><br>
-                <input type="text" placeholder="Anchor 1 Name" />
-                <input type="text" placeholder="Coordinates" />
+                <label for="A0NameInput">Anchor 1</label><br>
+                <input id="A0NameInput" type="text" placeholder="Anchor 1 Name" />
+                <input id="A0XInput" type="number" placeholder="X" />
+                <input id="A0YInput" type="number" placeholder="Y" />
+                <input id="A0ZInput" type="number" placeholder="Z" />
                 <br>
-                <label for="Achor2Name">Anchor 2</label><br>
-                <input type="text" placeholder="Anchor 2 Name" />
-                <input type="text" placeholder="Coordinates" />
+                <label for="A1NameInput">Anchor 2</label><br>
+                <input id="A1NameInput" type="text" placeholder="Anchor 2 Name" />
+                <input id="A1XInput" type="number" placeholder="X" />
+                <input id="A1YInput" type="number" placeholder="Y" />
+                <input id="A1ZInput" type="number" placeholder="Z" />
                 <br>
-                <label for="Achor3Name">Anchor 3</label><br>
-                <input type="text" placeholder="Anchor 3 Name" />
-                <input type="text" placeholder="Coordinates" />
+                <label for="A2NameInput">Anchor 3</label><br>
+                <input id="A2NameInput" type="text" placeholder="Anchor 3 Name" />
+                <input id="A2XInput" type="number" placeholder="X" />
+                <input id="A2YInput" type="number" placeholder="Y" />
+                <input id="A2ZInput" type="number" placeholder="Z" />
                 <br>
                 <!--Buttons-->
-                <button class="Buttons" type="reset">Reset</button>
-                <button class="Buttons" type="button" id="update">Update</button>
-
-            </form>
+                <button class="Buttons" type="reset" id="ResetButton">Reset</button>
+                <button class="Buttons" type="button" id="UpdateButton">Update</button>
+            </div>
         </div>
     </div>
 
