@@ -41,10 +41,10 @@ void RTLS::Init( const Settings& settings )
 	{
 		cfg = LoadConfig( settings.config_file.c_str() );
 	}
-	else if ( std::filesystem::exists( "config.json" ) )
-	{
-		cfg = LoadConfig( "config.json" );
-	}
+	//else if ( std::filesystem::exists( "config.json" ) )
+	//{
+	//	cfg = LoadConfig( "config.json" );
+	//}
 	else
 	{
 		cfg.trilaterationType = TrilaterationSolverType::BASIC;

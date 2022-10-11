@@ -15,11 +15,19 @@ socket.onclose = function()
 }
 socket.onmessage = function(event)
 {
-    let messageArr = event.data.split(',');
+    const jsonArr = JSON.parse(event.data)
 
-    const tagPosX = parseFloat(messageArr[0]).toFixed(3);
-    const tagPosY = parseFloat(messageArr[1]).toFixed(3);
-    const tagPosZ = parseFloat(messageArr[2]).toFixed(3);
+    const tagPosX = parseFloat(jsonArr["pos"]["x"]).toFixed(3);
+    const tagPosY = parseFloat(jsonArr["pos"]["y"]).toFixed(3);
+    const tagPosZ = parseFloat(jsonArr["pos"]["z"]).toFixed(3);
+    var TagPosOutput = document.getElementById("TagPosOutput");
+    TagPosOutput.textContent = "{" + tagPosX + ", " + tagPosY + ", " + tagPosZ + "}";
+
+    const tagVelX = parseFloat(jsonArr["vel"]["x"]).toFixed(3);
+    const tagVelY = parseFloat(jsonArr["vel"]["y"]).toFixed(3);
+    const tagVelZ = parseFloat(jsonArr["vel"]["z"]).toFixed(3);
+    var TagPosOutput = document.getElementById("TagVelocityOutput");
+    TagPosOutput.textContent = "{" + tagVelX + ", " + tagVelY + ", " + tagVelZ + "}";
 
     const timeNew = Date.now();
     const tagSpeedX = 1000*(tagPosX - CalcSpeed.xOld)/(timeNew - CalcSpeed.timeOld);
@@ -30,10 +38,6 @@ socket.onmessage = function(event)
     CalcSpeed.zOld = tagPosZ;
     CalcSpeed.timeOld = timeNew;
     const tagSpeedMag = Math.sqrt((tagSpeedX*tagSpeedX)+(tagSpeedY*tagSpeedY)+(tagSpeedZ*tagSpeedZ)).toFixed(3);
-
-    var TagPosOutput = document.getElementById("TagPosOutput");
-    TagPosOutput.textContent = "{" + tagPosX + ", " + tagPosY + ", " + tagPosZ + "}";
-
     var TagSpeedOutput = document.getElementById("TagSpeedOutput");
     TagSpeedOutput.textContent = tagSpeedMag + " m/s";
 }
@@ -58,20 +62,46 @@ async function fetchAsync(endpoint)
 
 async function updateAnchors()
 {
-    var A0 = document.getElementById("A0PosOutput");
-    var A1 = document.getElementById("A1PosOutput");
-    var A2 = document.getElementById("A2PosOutput");
+    var nameA0 = document.getElementById("A0Name");
+    var nameA1 = document.getElementById("A1Name");
+    var nameA2 = document.getElementById("A2Name");
+
+    var posA0 = document.getElementById("A0PosOutput");
+    var posA1 = document.getElementById("A1PosOutput");
+    var posA2 = document.getElementById("A2PosOutput");
 
     const anchors = await fetchAsync('/anchors');
-    A0.textContent = "{" + anchors[0].pos.x + ", " + anchors[0].pos.y + ", " + anchors[0].pos.z + "}";
-    A1.textContent = "{" + anchors[1].pos.x + ", " + anchors[1].pos.y + ", " + anchors[1].pos.z + "}";
-    A2.textContent = "{" + anchors[2].pos.x + ", " + anchors[2].pos.y + ", " + anchors[2].pos.z + "}";
+
+    nameA0.textContent = anchors[0].name;
+    nameA1.textContent = anchors[1].name;
+    nameA2.textContent = anchors[2].name;
+
+    posA0.textContent = "{" + anchors[0].pos.x + ", " + anchors[0].pos.y + ", " + anchors[0].pos.z + "}";
+    posA1.textContent = "{" + anchors[1].pos.x + ", " + anchors[1].pos.y + ", " + anchors[1].pos.z + "}";
+    posA2.textContent = "{" + anchors[2].pos.x + ", " + anchors[2].pos.y + ", " + anchors[2].pos.z + "}";
+}
+
+async function updateGrid()
+{
+    var lowBound = document.getElementById("LowBound");
+    var upBound = document.getElementById("UpBound");
+
+    const gridBounds = await fetchAsync('/bounds');
+
+    lowBound.textContent = "{" + gridBounds.mins.x + ", " + gridBounds.mins.y + ", " + gridBounds.mins.z + "}";
+    upBound.textContent = "{" + gridBounds.maxs.x + ", " + gridBounds.maxs.y + ", " + gridBounds.maxs.z + "}";
+}
+
+function updateInfo()
+{
+    updateAnchors();
+    updateGrid();
 }
 
 function init()
 {
     var bUpdate = document.getElementById("bUpdate");
-	bUpdate.onclick = updateAnchors;	
+	bUpdate.onclick = updateInfo;	
 }
 
 window.onload = init;
