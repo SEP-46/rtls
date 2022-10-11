@@ -6,15 +6,19 @@
     <meta name="description" content="This is the source code for our rtls program's web client" />
     <meta name="keywords" content="Swinburne University of Technology, SWE" />
     <meta name="author" content="Michael Woodrow, Rami Nouri, Fadal Farouk" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css" />
-	<script src="scripts/output_data.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!--Meta tag to make web page responsive and compatible with other devices-->
+    <link rel="stylesheet" href="css/styles.css" />     <!--Linking .css styles into web page-->
+    <script src="scripts/output_data.js"></script>
 </head>
 <!----------------------------------------------------------------------------------------------------------------------->
+
+
+
 
 <body>
     <h1>Real-time Loaction Systems</h1>
     <h1>Web Client</h1>
+
 
     <div class="MainGridContainer">
 
@@ -23,75 +27,101 @@
 
         <!--Grid 2-->
         <div>
+            <p>
             <form>
-                <div>
-				
-				T0
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				Speed
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				Direction
-				
-				</div>
-				
-				<output id="TagPosOutput">{x,y,z}</output>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				<output id="TagSpeedOutput">{M}</output>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				
-				<output id="TagDirectionOutput">{theta,phi}</output>
-				
+                <b>Tag Location: </b><output id="TagPosOutput"> {x, y, z} </output> (m)
+                <br>
+                <br>
+                <b>Velocity: </b><output id="TagVelocityOutput"> {x, y, z} </output> (m/s)
+                <br>
+                <br>
+                <b>Speed: </b><output id="TagSpeedOutput"> xx.xx m/s </output> (m/s)
+                <br>
+                <br>
+                <!-- Direction <output id="TagDirectionOutput"> {theata, phi} </output> -->
             </form>
+            </p>
+            <hr>
+            <form>
+            <br>
+            <u>Anchor Positions</u>
+            <br>
+                <output id="A0Name"> A0 </output>
+                <output id="A0PosOutput"> {x, y, z} </output> (m)
+                <br>
+                <output id="A1Name"> A1 </output>
+                <output id="A1PosOutput"> {x, y, z} </output> (m)
+                <br>
+                <output id="A2Name"> A2 </output>
+                <output id="A2PosOutput"> {x, y, z} </output> (m)
+            <br>
+            <br>
+            <u>Grid Layout</u>
+            <br>
+                Lower Bound: <output id="LowBound"> {x, y, z} </output> (m)
+                <br>
+                Upper Bound: <output id="UpBound"> {x, y, z} </output> (m)
+            </form>
+            
 
-            <div class="AnchorOutputGrid">
-			
-                <div>A0
-				&nbsp;&nbsp;
-				<output id="A0PosOutput">{x,y,z}</output></div>
-				<div></div><div></div><div></div>
-				
-                <div>A1
-				&nbsp;&nbsp;
-				<output id="A1PosOutput">{x,y,z}</output></div>
-				<div></div><div></div><div></div>
-				
-                <div>A2
-				&nbsp;&nbsp;
-				<output id="A2PosOutput">{x,y,z}</output></div>
-				
-				<input type="button" value="Testing" id="clickme" />
-				
-            </div>
         </div>
 
         <!--Grid 3: Input and Update Grid-->
-        
-            <div class="TagOutputGrid">
-                <form>
-                <label for="LabelTagName">Tag Name:</label><br>
-                <input type="text" value="" />
+
+        <div class="TagOutputGrid">
+            <form>
+                <p>Grid Area</p>
+                <div class="GridArea">
+                    <div></div>
+                    <div>Min</div>
+                    <div>Max</div>
+
+                    <div>X</div>
+                    <input type="text" value="X Min" />
+                    <input type="text" value="X Max" />
+
+                    <div>Y</div>
+                    <input type="text" value="Y Min" />
+                    <input type="text" value="Y Max" />
+
+                    <div>Z</div>
+                    <input type="text" value="Z Min" />
+                    <input type="text" value="Z Max" />
+                </div>
+                <hr>
+                <label for="Achor1Name">Anchor 1</label><br>
+                <input type="text" value="Anchor 1 Name" />
+                <input type="text" value="Coordinates" />
                 <br>
-                <input type="button" value="Update" />
-                <input type="reset">
-                    </form>
-            </div>   
+                <label for="Achor2Name">Anchor 2</label><br>
+                <input type="text" value="Anchor 2 Name" />
+                <input type="text" value="Coordinates" />
+                <br>
+                <label for="Achor3Name">Anchor 3</label><br>
+                <input type="text" value="Anchor 3 Name" />
+                <input type="text" value="Coordinates" />
+                <br>
+                <!--Buttons-->
+                <button class="Buttons" type="reset">Reset</button>
+                <button class="Buttons" type="button" id="bUpdate">Update</button>
+
+            </form>
+        </div>
     </div>
 
+    
 
-
-    <!--Basically to add whatever information relating to the web client-->
-    <h3>Info</h3>
+    <!--Legend-->
+    <h3>About this web client</h3>
     <p>Anchors: A1, A2, A3...</p>
     <p>tag = T0</p>
     <p>Other related information</p>
 
+
+    <hr>
     <footer>
         <p>RTLS Project | Final Year Project | Group 46 ©</p>
     </footer>
-
 </body>
 </html>
 

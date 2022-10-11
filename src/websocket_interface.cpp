@@ -4,6 +4,8 @@
 #include <json.hpp>
 #include <sstream>
 
+#include <iostream>
+
 using namespace nlohmann;
 
 class PImpl

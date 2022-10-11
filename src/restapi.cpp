@@ -36,6 +36,7 @@ void StartWebServer(RTLS& rtls)
             pos["x"] = anchor.pos.x;
             pos["y"] = anchor.pos.y;
             pos["z"] = anchor.pos.z;
+            anchorJson["pos"] = pos;
             anchorsJson.push_back(std::move(anchorJson));
         }
 
