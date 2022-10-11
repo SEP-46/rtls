@@ -102,9 +102,9 @@ static json SaveOutputConfig( const OutputConfig& data )
 {
 	json output;
 	if ( data.type == OutputType::UART )
-		output["uart"] = SaveUartOutputConfig( data.uart );
+		output = SaveUartOutputConfig( data.uart );
 	if ( data.type == OutputType::WEBSOCKET )
-		output["websocket"] = SaveWebSocketOutputConfig( data.websocket );
+		output = SaveWebSocketOutputConfig( data.websocket );
 	output["type"] = SaveEnum( data.type, gOutputTypeEnum );
 	return output;
 }
