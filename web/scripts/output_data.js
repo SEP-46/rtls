@@ -1,5 +1,12 @@
 'use strict';
 
+async function get(endpoint)
+{
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    return data;
+}
+
 let socket = new WebSocket("ws://localhost:9002");
 socket.onopen = function()
 {
@@ -15,62 +22,30 @@ socket.onclose = function()
 }
 socket.onmessage = function(event)
 {
-    const jsonArr = JSON.parse(event.data)
+    const data = JSON.parse(event.data)
 
-    const tagPosX = parseFloat(jsonArr["pos"]["x"]).toFixed(3);
-    const tagPosY = parseFloat(jsonArr["pos"]["y"]).toFixed(3);
-    const tagPosZ = parseFloat(jsonArr["pos"]["z"]).toFixed(3);
-    var TagPosOutput = document.getElementById("TagPosOutput");
-    TagPosOutput.textContent = "{" + tagPosX + ", " + tagPosY + ", " + tagPosZ + "}";
+    const TagPosOutput = document.getElementById("TagPosOutput");
+    TagPosOutput.textContent = "{" + data.pos.x.toFixed(3) + ", " + data.pos.y.toFixed(3) + ", " + data.pos.z.toFixed(3) + "}";
 
-    const tagVelX = parseFloat(jsonArr["vel"]["x"]).toFixed(3);
-    const tagVelY = parseFloat(jsonArr["vel"]["y"]).toFixed(3);
-    const tagVelZ = parseFloat(jsonArr["vel"]["z"]).toFixed(3);
-    var TagPosOutput = document.getElementById("TagVelocityOutput");
-    TagPosOutput.textContent = "{" + tagVelX + ", " + tagVelY + ", " + tagVelZ + "}";
+    const TagVelocityOutput = document.getElementById("TagVelocityOutput");
+    TagVelocityOutput.textContent = "{" + data.vel.x.toFixed(3) + ", " + data.vel.y.toFixed(3) + ", " + data.vel.z.toFixed(3) + "}";
 
-    const timeNew = Date.now();
-    const tagSpeedX = 1000*(tagPosX - CalcSpeed.xOld)/(timeNew - CalcSpeed.timeOld);
-    const tagSpeedY = 1000*(tagPosY - CalcSpeed.yOld)/(timeNew - CalcSpeed.timeOld);
-    const tagSpeedZ = 1000*(tagPosZ - CalcSpeed.zOld)/(timeNew - CalcSpeed.timeOld);
-    CalcSpeed.xOld = tagPosX;
-    CalcSpeed.yOld = tagPosY;
-    CalcSpeed.zOld = tagPosZ;
-    CalcSpeed.timeOld = timeNew;
-    const tagSpeedMag = Math.sqrt((tagSpeedX*tagSpeedX)+(tagSpeedY*tagSpeedY)+(tagSpeedZ*tagSpeedZ)).toFixed(3);
-    var TagSpeedOutput = document.getElementById("TagSpeedOutput");
+    const tagSpeedMag = Math.sqrt((data.vel.x*data.vel.x) + (data.vel.y*data.vel.y) + (data.vel.z*data.vel.z)).toFixed(3);
+    const TagSpeedOutput = document.getElementById("TagSpeedOutput");
     TagSpeedOutput.textContent = tagSpeedMag + " m/s";
-}
-
-class CalcSpeed
-{
-    constructor()
-    {
-        xOld = 0.000;
-        yOld = 0.000;
-        zOld = 0.000;
-        timeOld = Date.now();
-    }
-}
-
-async function fetchAsync(endpoint)
-{
-    let response = await fetch(endpoint, {mode: "no-cors"});
-    let data = await response.json();
-    return data;
 }
 
 async function updateAnchors()
 {
-    var nameA0 = document.getElementById("A0Name");
-    var nameA1 = document.getElementById("A1Name");
-    var nameA2 = document.getElementById("A2Name");
+    const nameA0 = document.getElementById("A0Name");
+    const nameA1 = document.getElementById("A1Name");
+    const nameA2 = document.getElementById("A2Name");
 
-    var posA0 = document.getElementById("A0PosOutput");
-    var posA1 = document.getElementById("A1PosOutput");
-    var posA2 = document.getElementById("A2PosOutput");
+    const posA0 = document.getElementById("A0PosOutput");
+    const posA1 = document.getElementById("A1PosOutput");
+    const posA2 = document.getElementById("A2PosOutput");
 
-    const anchors = await fetchAsync('/anchors');
+    const anchors = await get('/anchors');
 
     nameA0.textContent = anchors[0].name;
     nameA1.textContent = anchors[1].name;
@@ -83,10 +58,10 @@ async function updateAnchors()
 
 async function updateGrid()
 {
-    var lowBound = document.getElementById("LowBound");
-    var upBound = document.getElementById("UpBound");
+    const lowBound = document.getElementById("LowBound");
+    const upBound = document.getElementById("UpBound");
 
-    const gridBounds = await fetchAsync('/bounds');
+    const gridBounds = await get('/bounds');
 
     lowBound.textContent = "{" + gridBounds.mins.x + ", " + gridBounds.mins.y + ", " + gridBounds.mins.z + "}";
     upBound.textContent = "{" + gridBounds.maxs.x + ", " + gridBounds.maxs.y + ", " + gridBounds.maxs.z + "}";
@@ -100,8 +75,8 @@ function updateInfo()
 
 function init()
 {
-    var bUpdate = document.getElementById("bUpdate");
-	bUpdate.onclick = updateInfo;	
+    const update = document.getElementById("update");
+    update.onclick = updateInfo;
 }
 
 window.onload = init;
