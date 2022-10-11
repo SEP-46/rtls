@@ -41,10 +41,10 @@ void RTLS::Init( const Settings& settings )
 	{
 		cfg = LoadConfig( settings.config_file.c_str() );
 	}
-	//else if ( std::filesystem::exists( "config.json" ) )
-	//{
-	//	cfg = LoadConfig( "config.json" );
-	//}
+	else if ( std::filesystem::exists( "config.json" ) )
+	{
+		cfg = LoadConfig( "config.json" );
+	}
 	else
 	{
 		cfg.trilaterationType = TrilaterationSolverType::BASIC;
@@ -56,6 +56,17 @@ void RTLS::Init( const Settings& settings )
 
 		cfg.bounds.mins = { 0.0f, 0.0f, 0.0f };
 		cfg.bounds.maxs = { 10.0f, 10.0f, 10.0f };
+
+		const UWBAnchorList& anchors = mTag->GetAnchorList();
+		for ( size_t i = 0; i < anchors.NumAnchors(); i++ )
+		{
+			auto& anchor = anchors.GetAnchorByIndex( i );
+			AnchorConfig anchorConfig;
+			anchorConfig.id = anchor.GetId();
+			anchorConfig.name = "A"s + std::to_string( anchor.GetId() );
+			anchorConfig.pos = anchor.GetPosition();
+			cfg.anchors.push_back( anchorConfig );
+		}
 	}
 
 	ApplyConfig( cfg );
@@ -79,16 +90,7 @@ bool RTLS::Run()
 		AnchorConfig* anchorConfig = FindAnchorConfigById( measurement.id );
 		AnchorConfig tagAnchorConfig;
 		if ( !anchorConfig )
-		{
-			const UWBAnchorList& anchors = mTag->GetAnchorList();
-			const UWBAnchor* anchor = anchors.FindAnchorById( measurement.id );
-			if ( !anchor )
-				return false;
-			tagAnchorConfig.id = anchor->GetId();
-			tagAnchorConfig.pos = anchor->GetPosition();
-			tagAnchorConfig.name = "A" + std::to_string( tagAnchorConfig.id );
-			anchorConfig = &tagAnchorConfig;
-		}
+			anchorConfig = AddAnchorToConfig( measurement.id, "A" + std::to_string( measurement.id ), { 0.0f, 0.0f, 0.0f } );
 
 		anchorPositions[i] = anchorConfig->pos;
 		anchorDistances[i] = measurement.distance;
@@ -148,22 +150,7 @@ void RTLS::SetTagName( const std::string& name )
 
 std::vector<AnchorConfig> RTLS::GetAnchors() const
 {
-	if ( !mConfig.anchors.empty() )
-		return mConfig.anchors;
-
-	const UWBAnchorList& anchors = mTag->GetAnchorList();
-	std::vector<AnchorConfig> anchorConfigs;
-	for ( size_t i = 0; i < anchors.NumAnchors(); i++ )
-	{
-		auto& anchor = anchors.GetAnchorByIndex( i );
-		AnchorConfig anchorConfig;
-		anchorConfig.id = anchor.GetId();
-		anchorConfig.name = "A"s + std::to_string( anchor.GetId() );
-		anchorConfig.pos = anchor.GetPosition();
-		anchorConfigs.push_back( anchorConfig );
-	}
-
-	return anchorConfigs;
+	return mConfig.anchors;
 }
 
 bool RTLS::SetAnchorName( NodeId_t id, const std::string& name )
