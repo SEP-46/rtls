@@ -102,6 +102,7 @@ TrilaterationResult TrilaterationSolver_Basic::FindTagPosition(
 
 	mLastPos = pos;
 	mLastTimestamp = timestamp;
+	mHasLastPos = true;
 
 	return { pos, vel };
 }
