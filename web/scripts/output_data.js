@@ -3,8 +3,17 @@
 async function get(endpoint)
 {
     const response = await fetch(endpoint);
-    const data = await response.json();
-    return data;
+    return response.json();
+}
+
+async function put(endpoint, data)
+{
+    const response = await fetch(endpoint, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+    return response.json();
 }
 
 let socket = new WebSocket("ws://localhost:9002");
@@ -39,11 +48,14 @@ async function resetAnchors()
 {
     const anchors = await get('/anchors');
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++)
+    {
+        const idInput = document.getElementById("A"+i+"Id"); // Hidden element for storing anchor ID
         const nameInput = document.getElementById("A"+i+"NameInput");
         const xInput = document.getElementById("A"+i+"XInput");
         const yInput = document.getElementById("A"+i+"YInput");
         const zInput = document.getElementById("A"+i+"ZInput");
+        idInput.value = anchors[i].id;
         nameInput.value = anchors[i].name;
         xInput.value = anchors[i].pos.x;
         yInput.value = anchors[i].pos.y;
@@ -55,14 +67,12 @@ async function resetGrid()
 {
     const gridBounds = await get('/bounds');
 
-    const boundsMinXInput = document.getElementById("BoundsMinX");
-    const boundsMaxXInput = document.getElementById("BoundsMaxX");
-    const boundsMinYInput = document.getElementById("BoundsMinY");
-    const boundsMaxYInput = document.getElementById("BoundsMaxY");
-    const boundsMinZInput = document.getElementById("BoundsMinZ");
-    const boundsMaxZInput = document.getElementById("BoundsMaxZ");
-    boundsMinXInput.value = gridBounds.mins.x; boundsMinYInput.value = gridBounds.mins.y; boundsMinZInput.value = gridBounds.mins.z;
-    boundsMaxXInput.value = gridBounds.maxs.x; boundsMaxYInput.value = gridBounds.maxs.y; boundsMaxZInput.value = gridBounds.maxs.z;
+    document.getElementById("BoundsMinX").value = gridBounds.mins.x;
+    document.getElementById("BoundsMinY").value = gridBounds.mins.y;
+    document.getElementById("BoundsMinZ").value = gridBounds.mins.z;
+    document.getElementById("BoundsMaxX").value = gridBounds.maxs.x;
+    document.getElementById("BoundsMaxY").value = gridBounds.maxs.y;
+    document.getElementById("BoundsMaxZ").value = gridBounds.maxs.z;
 }
 
 function resetInfo()
@@ -71,10 +81,58 @@ function resetInfo()
     resetGrid();
 }
 
+async function updateAnchors()
+{
+    for (let i = 0; i < 3; i++)
+    {
+        const idInput = document.getElementById("A"+i+"Id"); // Hidden element for storing anchor ID
+        const nameInput = document.getElementById("A"+i+"NameInput");
+        const xInput = document.getElementById("A"+i+"XInput");
+        const yInput = document.getElementById("A"+i+"YInput");
+        const zInput = document.getElementById("A"+i+"ZInput");
+
+        const data = {
+            "name": nameInput.value,
+            "x": xInput.valueAsNumber,
+            "y": yInput.valueAsNumber,
+            "z": zInput.valueAsNumber
+        };
+        await put('/anchors/'+idInput.value, data);
+    }
+}
+
+async function updateGrid()
+{
+    const data = {
+        "mins": {
+            "x": document.getElementById("BoundsMinX").valueAsNumber,
+            "y": document.getElementById("BoundsMinY").valueAsNumber,
+            "z": document.getElementById("BoundsMinZ").valueAsNumber
+        },
+        "maxs": {
+            "x": document.getElementById("BoundsMaxX").valueAsNumber,
+            "y": document.getElementById("BoundsMaxY").valueAsNumber,
+            "z": document.getElementById("BoundsMaxZ").valueAsNumber
+        }
+    };
+    await put('/bounds', data);
+}
+
+async function updateInfo()
+{
+    await updateAnchors();
+    await updateGrid();
+    resetInfo();
+}
+
 function init()
 {
     const reset = document.getElementById("ResetButton");
     reset.onclick = resetInfo;
+
+    const update = document.getElementById("UpdateButton");
+    update.onclick = updateInfo;
+
     resetInfo();
 }
 
