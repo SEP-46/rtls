@@ -148,7 +148,22 @@ void RTLS::SetTagName( const std::string& name )
 
 std::vector<AnchorConfig> RTLS::GetAnchors() const
 {
-	return mConfig.anchors;
+	if ( !mConfig.anchors.empty() )
+		return mConfig.anchors;
+
+	const UWBAnchorList& anchors = mTag->GetAnchorList();
+	std::vector<AnchorConfig> anchorConfigs;
+	for ( size_t i = 0; i < anchors.NumAnchors(); i++ )
+	{
+		auto& anchor = anchors.GetAnchorByIndex( i );
+		AnchorConfig anchorConfig;
+		anchorConfig.id = anchor.GetId();
+		anchorConfig.name = "A"s + std::to_string( anchor.GetId() );
+		anchorConfig.pos = anchor.GetPosition();
+		anchorConfigs.push_back( anchorConfig );
+	}
+
+	return anchorConfigs;
 }
 
 bool RTLS::SetAnchorName( NodeId_t id, const std::string& name )
