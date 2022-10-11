@@ -9,7 +9,7 @@ MockTag::MockTag()
 	anchor1.SetPosition( { 0.0f, 0.0f, 0.0f } );
 
 	UWBAnchor& anchor2 = mAnchorList.AddAnchor( 2 );
-	anchor1.SetPosition( { 1.0f, 0.0f, 0.0f } );
+	anchor2.SetPosition( { 1.0f, 0.0f, 0.0f } );
 
 	UWBAnchor& anchor3 = mAnchorList.AddAnchor( 3 );
 	anchor3.SetPosition( { 0.0f, 1.0f, 0.0f } );
