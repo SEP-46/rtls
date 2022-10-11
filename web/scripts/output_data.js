@@ -35,49 +35,47 @@ socket.onmessage = function(event)
     TagSpeedOutput.textContent = tagSpeedMag + " m/s";
 }
 
-async function updateAnchors()
+async function resetAnchors()
 {
-    const nameA0 = document.getElementById("A0Name");
-    const nameA1 = document.getElementById("A1Name");
-    const nameA2 = document.getElementById("A2Name");
-
-    const posA0 = document.getElementById("A0PosOutput");
-    const posA1 = document.getElementById("A1PosOutput");
-    const posA2 = document.getElementById("A2PosOutput");
-
     const anchors = await get('/anchors');
 
-    nameA0.textContent = anchors[0].name;
-    nameA1.textContent = anchors[1].name;
-    nameA2.textContent = anchors[2].name;
-
-    posA0.textContent = "{" + anchors[0].pos.x + ", " + anchors[0].pos.y + ", " + anchors[0].pos.z + "}";
-    posA1.textContent = "{" + anchors[1].pos.x + ", " + anchors[1].pos.y + ", " + anchors[1].pos.z + "}";
-    posA2.textContent = "{" + anchors[2].pos.x + ", " + anchors[2].pos.y + ", " + anchors[2].pos.z + "}";
+    for (let i = 0; i < 3; i++) {
+        const nameInput = document.getElementById("A"+i+"NameInput");
+        const xInput = document.getElementById("A"+i+"XInput");
+        const yInput = document.getElementById("A"+i+"YInput");
+        const zInput = document.getElementById("A"+i+"ZInput");
+        nameInput.value = anchors[i].name;
+        xInput.value = anchors[i].pos.x;
+        yInput.value = anchors[i].pos.y;
+        zInput.value = anchors[i].pos.z;
+    }
 }
 
-async function updateGrid()
+async function resetGrid()
 {
-    const lowBound = document.getElementById("LowBound");
-    const upBound = document.getElementById("UpBound");
-
     const gridBounds = await get('/bounds');
 
-    lowBound.textContent = "{" + gridBounds.mins.x + ", " + gridBounds.mins.y + ", " + gridBounds.mins.z + "}";
-    upBound.textContent = "{" + gridBounds.maxs.x + ", " + gridBounds.maxs.y + ", " + gridBounds.maxs.z + "}";
+    const boundsMinXInput = document.getElementById("BoundsMinX");
+    const boundsMaxXInput = document.getElementById("BoundsMaxX");
+    const boundsMinYInput = document.getElementById("BoundsMinY");
+    const boundsMaxYInput = document.getElementById("BoundsMaxY");
+    const boundsMinZInput = document.getElementById("BoundsMinZ");
+    const boundsMaxZInput = document.getElementById("BoundsMaxZ");
+    boundsMinXInput.value = gridBounds.mins.x; boundsMinYInput.value = gridBounds.mins.y; boundsMinZInput.value = gridBounds.mins.z;
+    boundsMaxXInput.value = gridBounds.maxs.x; boundsMaxYInput.value = gridBounds.maxs.y; boundsMaxZInput.value = gridBounds.maxs.z;
 }
 
-function updateInfo()
+function resetInfo()
 {
-    updateAnchors();
-    updateGrid();
+    resetAnchors();
+    resetGrid();
 }
 
 function init()
 {
-    const update = document.getElementById("update");
-    update.onclick = updateInfo;
-    updateInfo();
+    const reset = document.getElementById("ResetButton");
+    reset.onclick = resetInfo;
+    resetInfo();
 }
 
 window.onload = init;
