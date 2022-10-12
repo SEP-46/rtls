@@ -31,18 +31,14 @@ socket.onclose = function()
 }
 socket.onmessage = function(event)
 {
-    if(timeForGridRefresh == 0)
-    {
-        drawGrid();
-        timeForGridRefresh = 11;
-    }
-    timeForGridRefresh -= 1;
-
     const data = JSON.parse(event.data)
+    lastTagData = data;
+
+    drawGrid();
+    drawTagLoc(data);
 
     const TagPosOutput = document.getElementById("TagPosOutput");
     TagPosOutput.textContent = "{" + data.pos.x.toFixed(3) + ", " + data.pos.y.toFixed(3) + ", " + data.pos.z.toFixed(3) + "}";
-    drawTagLoc(data);
 
     const TagVelocityOutput = document.getElementById("TagVelocityOutput");
     TagVelocityOutput.textContent = "{" + data.vel.x.toFixed(3) + ", " + data.vel.y.toFixed(3) + ", " + data.vel.z.toFixed(3) + "}";
@@ -52,9 +48,14 @@ socket.onmessage = function(event)
     TagSpeedOutput.textContent = tagSpeedMag + " m/s";
 }
 
+let lastTagData = undefined;
+let lastAnchorData = [];
+let lastBoundsData = {};
+
 async function resetAnchors()
 {
     const anchors = await get('/anchors');
+    lastAnchorData = anchors;
 
     for (let i = 0; i < 3; i++)
     {
@@ -74,6 +75,7 @@ async function resetAnchors()
 async function resetGrid()
 {
     const gridBounds = await get('/bounds');
+    lastBoundsData = gridBounds;
 
     document.getElementById("BoundsMinX").value = gridBounds.mins.x;
     document.getElementById("BoundsMinY").value = gridBounds.mins.y;
@@ -89,9 +91,9 @@ function resetInfo()
     resetGrid();
 }
 
-async function drawTagLoc(jsonArr)
+async function drawTagLoc(data)
 {
-    const gridBounds = await get('/bounds');
+    const gridBounds = lastBoundsData;
     let mapPosToGridHeight = bh/gridBounds.maxs.y;
     let mapPosToGridWidth = bh/gridBounds.maxs.y;
     
@@ -101,42 +103,27 @@ async function drawTagLoc(jsonArr)
     ctx.beginPath();
     ctx.arc
     (
-        offsetGrid + mapPosToGridWidth*jsonArr["pos"]["x"],
-        bh + offsetGrid - mapPosToGridHeight*jsonArr["pos"]["y"],
+        offsetGrid + mapPosToGridWidth * data.pos.x,
+        bh + offsetGrid - mapPosToGridHeight * data.pos.y,
         3, 0, 2 * Math.PI
     );
     ctx.fill();
 
     //Ghost
-    if (timeForGhostUpdate == 0)
+    for (let i = 0; i <= tagGhostNo; i += 1)
     {
-        for (let x = tagGhostNo; x > 0; x -= 1)
+        if (typeof tagGhostArr[i] !== 'undefined')
         {
-            if (typeof tagGhostArr[x-1] !== 'undefined')
-            {
-                tagGhostArr[x] = tagGhostArr[x-1];
-            }
+            ctx.beginPath();
+            ctx.arc
+            (
+                offsetGrid + mapPosToGridWidth * tagGhostArr[i].pos.x,
+                bh + offsetGrid - mapPosToGridHeight * tagGhostArr[i].pos.y,
+                2, 0, 2 * Math.PI
+            );
+            ctx.fill();
         }
-        tagGhostArr[0] = jsonArr;
-
-        for (let x = 0; x <= tagGhostNo; x += 1)
-        {
-            if (typeof tagGhostArr[x] !== 'undefined')
-            {
-                ctx.beginPath();
-                ctx.arc
-                (
-                    offsetGrid + mapPosToGridWidth*tagGhostArr[x]["pos"]["x"],
-                    bh + offsetGrid - mapPosToGridHeight*tagGhostArr[x]["pos"]["y"],
-                    3, 0, 2 * Math.PI
-                );
-                ctx.fill();
-            }
-        }
-
-        timeForGhostUpdate = 11;
     }
-    timeForGhostUpdate -= 1;
 }
 
 async function updateAnchors()
@@ -176,7 +163,20 @@ async function updateGrid()
     await put('/bounds', data);
 }
 
-async function drawGrid() {
+function updateTagGhost()
+{
+    for (let i = tagGhostNo; i > 0; i -= 1)
+    {
+        if (typeof tagGhostArr[i-1] !== 'undefined')
+        {
+            tagGhostArr[i] = tagGhostArr[i-1];
+        }
+    }
+    tagGhostArr[0] = lastTagData;
+}
+
+async function drawGrid()
+{
     let c = document.getElementById("myCanvas");
     let ctx = c.getContext("2d");
 
@@ -202,8 +202,8 @@ async function drawGrid() {
     ctx.strokeStyle = "black";
     ctx.stroke();
 
-    const anchors = await get('/anchors');
-    const gridBounds = await get('/bounds');
+    const anchors = lastAnchorData;
+    const gridBounds = lastBoundsData;
 
     let mapPosToGridHeight = bh / gridBounds.maxs.y;
     let mapPosToGridWidth = bh / gridBounds.maxs.y;
@@ -254,13 +254,14 @@ function init()
     update.onclick = updateInfo;
 
     resetInfo();
+
+    setInterval(updateTagGhost, 500);
 }
 
 window.onload = init;
 
 // HUD Settings
     // Counters
-    let timeForGridRefresh = 0;
     let timeForGhostUpdate = 0;
     // Box width
     let bw = 400;
