@@ -7,16 +7,22 @@
     <meta name="keywords" content="Swinburne University of Technology, SWE" />
     <meta name="author" content="Michael Woodrow, Rami Nouri, Fadal Farouk" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!--Meta tag to make web page responsive and compatible with other devices-->
-    <link rel="stylesheet" href="css/styles.css" /> <!--Linking .css styles into web page-->
     <script src="scripts/output_data.js"></script>
+    <link rel="stylesheet" href="css/styles.css" /> <!--Linking .css styles into web page-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Montserrat:wght@100&family=Roboto:wght@100&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300&family=Michroma&family=Montserrat:wght@100&family=Roboto:wght@100&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <!----------------------------------------------------------------------------------------------------------------------->
 
 <body>
-    <h1>Real-time Loaction Systems</h1>
+    <h1>Real-time Location Systems</h1>
     <h1>Web Client</h1>
-
+    <img id="SwinburneLogo" src="https://seeklogo.com/images/S/swinburne-university-of-technology-logo-8DF0E18721-seeklogo.com.png" alt="SwinburneLogo">
     <div class="MainGridContainer">
         <!--Grid 1: Map grid-->
         <div class="grid1"><canvas id="myCanvas" width="450" height="450" style="border:1px solid #000000;"></canvas></div>
@@ -24,8 +30,8 @@
         <!--Grid 2-->
         <div>
             <p>
-            <div>
-                <b>Tag Location: </b><output id="TagPosOutput"> {x, y, z} </output> (m)
+            <div id="TagOutputData">
+                <b>Tag Location:</b><output id="TagPosOutput"> {x, y, z} </output> (m)
                 <br>
                 <br>
                 <b>Velocity: </b><output id="TagVelocityOutput"> {x, y, z} </output> (m/s)
@@ -41,7 +47,7 @@
         <!--Grid 3: Input and Update Grid-->
         <div class="TagOutputGrid">
             <div>
-                <p>Grid Area</p>
+                <h2>Grid Area</h2>
                 <div class="GridArea">
                     <div></div>
                     <div>Min</div>
