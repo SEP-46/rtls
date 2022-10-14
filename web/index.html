@@ -19,16 +19,17 @@
 
 <!----------------------------------------------------------------------------------------------------------------------->
 
-<body>
+<body id="TopOfPage">
     <h1>Real-time Location Systems</h1>
     <h1>Web Client</h1>
     <img id="SwinburneLogo" src="https://seeklogo.com/images/S/swinburne-university-of-technology-logo-8DF0E18721-seeklogo.com.png" alt="SwinburneLogo">
     <div class="MainGridContainer">
         <!--Grid 1: Map grid-->
-        <div class="grid1"><canvas id="myCanvas" width="450" height="450" style="border:1px solid #000000;"></canvas></div>
+        
+        <div class="Grid1"><h2>Site Map</h2><canvas id="myCanvas" width="450" height="450" style="border:1px solid #000000;"></canvas></div>
 
         <!--Grid 2-->
-        <div>
+        <div class="Grid2">
             <p>
             <div id="TagOutputData">
                 <b>Tag Location:</b><output id="TagPosOutput"> {x, y, z} </output> (m)
@@ -45,7 +46,7 @@
         </div>
 
         <!--Grid 3: Input and Update Grid-->
-        <div class="TagOutputGrid">
+        <div class="Grid3">
             <div>
                 <h2>Grid Area</h2>
                 <div class="GridArea">
@@ -66,6 +67,7 @@
                     <input id="BoundsMaxZ" type="number" placeholder="Z Max" />
                 </div>
                 <hr>
+                <br>
                 <label for="A0NameInput">Anchor 1</label><br>
                 <input id="A0Id" type="hidden" />
                 <input id="A0NameInput" type="text" placeholder="Anchor 1 Name" />
@@ -73,6 +75,7 @@
                 <input id="A0YInput" type="number" placeholder="Y" />
                 <input id="A0ZInput" type="number" placeholder="Z" />
                 <br>
+                <br />
                 <label for="A1NameInput">Anchor 2</label><br>
                 <input id="A1Id" type="hidden" />
                 <input id="A1NameInput" type="text" placeholder="Anchor 2 Name" />
@@ -80,12 +83,14 @@
                 <input id="A1YInput" type="number" placeholder="Y" />
                 <input id="A1ZInput" type="number" placeholder="Z" />
                 <br>
+                <br>
                 <label for="A2NameInput">Anchor 3</label><br>
                 <input id="A2Id" type="hidden" />
                 <input id="A2NameInput" type="text" placeholder="Anchor 3 Name" />
                 <input id="A2XInput" type="number" placeholder="X" />
                 <input id="A2YInput" type="number" placeholder="Y" />
                 <input id="A2ZInput" type="number" placeholder="Z" />
+                <br>
                 <br>
                 <!--Buttons-->
                 <button class="Buttons" type="reset" id="ResetButton">Reset</button>
@@ -99,10 +104,13 @@
     <p>Anchors: A1, A2, A3...</p>
     <p>tag = T0</p>
     <p>Other related information</p>
+    <p><a href="manual.html">Manual</a></p>
 
     <hr>
     <footer>
-        <p>RTLS Project | Final Year Project | Group 46 ©</p>
+        <p>This is a property of Swinburne University of Technology as part of a final year capstone project</p>
+        <p>Real-time Location Systems| Final Year Project | Group 46 ©</p>
     </footer>
+
 </body>
 </html>
