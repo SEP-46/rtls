@@ -1,11 +1,37 @@
 /*Body-------------------------------------------------------------------------------------*/
 body {
     background-color: #212121;
+    background:linear-gradient(#212121, #000000);
     text-align: center;
-    font-palette:light;
+    font-palette: light;
     color: #F6F7F9;
+    font-family: 'Jura', sans-serif;
 }
 
+h1 {
+    font-family: 'Michroma', sans-serif;
+    text-shadow: 2px 2px #000000;
+}
+
+h2 {
+    font-family: 'Michroma', sans-serif;
+    text-shadow: 2px 2px #000000;
+}
+
+footer {
+    font-size:9px;
+}
+
+#SwinburneLogo{
+    position:absolute;
+    top:0px;
+    right:0px;
+    width:90px;
+}
+
+placeholder {
+    font-family: 'Jura', sans-serif;
+}
 
 /*Buttons-------------------------------------------------------------------------------------*/
 button,
@@ -58,6 +84,7 @@ button:hover{
     width: 100%;
 }
 
+
 /*Main Grid-------------------------------------------------------------------------------------*/
 .MainGridContainer {
     display: grid;
@@ -65,20 +92,20 @@ button:hover{
     gap: 5px;
     background-color: #616161; /*Adjust color of grid border*/
     padding: 5px;
+    width: 1000px;  
 }
 
-    .MainGridContainer > div {
-        background-color: #424242; /*Adjust color inside grid*/
-        text-align: center;
-        padding: 10px 0;
-        font-size: 15px;
-    }
+canvas{
+    resize:both;
+    overflow:auto;
+}
 
-.TagOutputGrid {
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-    gap: 10px;
-    padding: 10px;
+
+.MainGridContainer > div {
+    background-color: #424242; /*Adjust color inside grid*/
+    text-align: center;
+    padding: 10px 0;
+    font-size: 15px;
 }
 
 .AnchorOutputGrid {
@@ -88,8 +115,19 @@ button:hover{
     padding: 10px;
 }
 
-.grid1 {
+.Grid1 {
     grid-area: 1 / 1 / span 2 / span 2;
+}
+
+Grid2{
+    position:center;
+}
+
+.Grid3 {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 10px;
+    padding: 10px;
 }
 
 .GridArea {
@@ -99,6 +137,8 @@ button:hover{
     padding: 10px;
 }
 
-
-
-
+#TagOutputData{
+    align-content:center;
+    font-size:20px;
+    position:center;
+}
