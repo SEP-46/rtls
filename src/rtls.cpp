@@ -52,11 +52,6 @@ void RTLS::Init( const Settings& settings )
 			AlgorithmConfig alg;
 			alg.trilaterationType = TrilaterationSolverType::BASIC;
 
-			OutputConfig output;
-			output.type = OutputType::WEBSOCKET;
-			output.websocket.port = 9002;
-			alg.outputs.push_back( output );
-
 			cfg.algorithms.push_back( std::move( alg ) );
 		}
 		{
@@ -88,6 +83,9 @@ void RTLS::Init( const Settings& settings )
 	}
 
 	ApplyConfig( cfg );
+
+	mWebClientOutput = std::make_unique<WebSocketInterface>( 9002 );
+	mSelectedAlgorithm = "basic";
 }
 
 bool RTLS::Run()
@@ -146,6 +144,9 @@ bool RTLS::Run()
 		{
 			output->Write( pos, vel );
 		}
+
+		if ( mSelectedAlgorithm == algorithm.solver->GetName() )
+			mWebClientOutput->Write( pos, vel );
 
 		if ( mShouldLog )
 		{
@@ -324,4 +325,13 @@ void RTLS::SetBounds( const AABB& bounds )
 
 	mConfig.bounds = bounds;
 	SaveConfig();
+}
+
+std::string RTLS::GetSelectedAlgorithm()
+{
+	return mSelectedAlgorithm;
+}
+void RTLS::SetSelectedAlgorithm( std::string name )
+{
+	mSelectedAlgorithm = std::move( name );
 }

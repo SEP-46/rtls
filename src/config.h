@@ -7,6 +7,7 @@
 
 enum class TrilaterationSolverType
 {
+	NONE = -1,
 	BUILTIN,
 	BASIC,
 	EKF
