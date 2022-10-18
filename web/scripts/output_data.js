@@ -1,5 +1,11 @@
 'use strict';
 
+// Tag Ghost Array
+let tagGhostArr = new Array(5);
+const bw = 400;
+const bh = 400;
+const offsetGrid = 25;
+
 async function get(endpoint)
 {
     const response = await fetch(endpoint);
@@ -45,7 +51,7 @@ socket.onmessage = function(event)
 
     const tagSpeedMag = Math.sqrt((data.vel.x*data.vel.x) + (data.vel.y*data.vel.y) + (data.vel.z*data.vel.z)).toFixed(3);
     const TagSpeedOutput = document.getElementById("TagSpeedOutput");
-    TagSpeedOutput.textContent = tagSpeedMag + " m/s";
+    TagSpeedOutput.textContent = tagSpeedMag;
 }
 
 let lastTagData = undefined;
@@ -85,42 +91,86 @@ async function resetGrid()
     document.getElementById("BoundsMaxZ").value = gridBounds.maxs.z;
 }
 
+async function resetAlgorithm()
+{
+    const algorithm = await get('/algorithm');
+
+    document.getElementById("Algorithm").value = algorithm.name;
+}
+
 function resetInfo()
 {
     resetAnchors();
     resetGrid();
+    resetAlgorithm();
+}
+
+// https://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
+function canvas_arrow(context, fromx, fromy, tox, toy) {
+  const headlen = 10; // length of head in pixels
+  const dx = tox - fromx;
+  const dy = toy - fromy;
+  const angle = Math.atan2(dy, dx);
+  context.moveTo(fromx, fromy);
+  context.lineTo(tox, toy);
+  context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+  context.moveTo(tox, toy);
+  context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+}
+
+// https://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another
+function translate(value, leftMin, leftMax, rightMin, rightMax)
+{
+    // Figure out how 'wide' each range is
+    const leftSpan = leftMax - leftMin;
+    const rightSpan = rightMax - rightMin;
+
+    // Convert the left range into a 0-1 range (float)
+    const valueScaled = (value - leftMin) / leftSpan;
+
+    // Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan);
+}
+
+function worldSpaceToMapSpace(c, x, y) {
+    const gridBounds = lastBoundsData;
+
+    return {
+        "x": translate(x, gridBounds.mins.x, gridBounds.maxs.x, offsetGrid, c.width - offsetGrid),
+        "y": translate(y, gridBounds.mins.y, gridBounds.maxs.y, c.height - offsetGrid, offsetGrid)
+    };
 }
 
 async function drawTagLoc(data)
 {
-    const gridBounds = lastBoundsData;
-    let mapPosToGridHeight = bh/gridBounds.maxs.y;
-    let mapPosToGridWidth = bh/gridBounds.maxs.y;
-    
-    let c = document.getElementById("myCanvas");
+    let c = document.getElementById("Visualisation");
     let ctx = c.getContext("2d");
+
+    const tagMapPos = worldSpaceToMapSpace(c, data.pos.x, data.pos.y);
+
     ctx.fillStyle = "green";
     ctx.beginPath();
-    ctx.arc
-    (
-        offsetGrid + mapPosToGridWidth * data.pos.x,
-        bh + offsetGrid - mapPosToGridHeight * data.pos.y,
-        3, 0, 2 * Math.PI
-    );
+    ctx.arc(tagMapPos.x, tagMapPos.y, 3, 0, 2 * Math.PI);
     ctx.fill();
 
+    // Velocity arrow
+    if (data.vel.x != 0 || data.vel.y != 0)
+    {
+       const tagVelEndPos = worldSpaceToMapSpace(c, data.pos.x + data.vel.x * 0.3, data.pos.y + data.vel.y * 0.3);
+       canvas_arrow(ctx, tagMapPos.x, tagMapPos.y, tagVelEndPos.x, tagVelEndPos.y);
+       ctx.strokeStyle = "black";
+       ctx.stroke();
+    }
+
     //Ghost
-    for (let i = 0; i <= tagGhostNo; i += 1)
+    for (let i = 0; i < tagGhostArr.length; i += 1)
     {
         if (typeof tagGhostArr[i] !== 'undefined')
         {
+            const ghostMapPos = worldSpaceToMapSpace(c, tagGhostArr[i].pos.x, tagGhostArr[i].pos.y);
+
             ctx.beginPath();
-            ctx.arc
-            (
-                offsetGrid + mapPosToGridWidth * tagGhostArr[i].pos.x,
-                bh + offsetGrid - mapPosToGridHeight * tagGhostArr[i].pos.y,
-                2, 0, 2 * Math.PI
-            );
+            ctx.arc(ghostMapPos.x, ghostMapPos.y, 2, 0, 2 * Math.PI);
             ctx.fill();
         }
     }
@@ -163,9 +213,15 @@ async function updateGrid()
     await put('/bounds', data);
 }
 
+async function updateAlgorithm()
+{
+    const data = { "name": document.getElementById("Algorithm").value };
+    await put('/algorithm', data);
+}
+
 function updateTagGhost()
 {
-    for (let i = tagGhostNo; i > 0; i -= 1)
+    for (let i = tagGhostArr.length - 1; i > 0; i -= 1)
     {
         if (typeof tagGhostArr[i-1] !== 'undefined')
         {
@@ -177,27 +233,27 @@ function updateTagGhost()
 
 async function drawGrid()
 {
-    let c = document.getElementById("myCanvas");
+    let c = document.getElementById("Visualisation");
     let ctx = c.getContext("2d");
 
     ctx.beginPath();
-    ctx.rect(0, 0, bw + 2 * offsetGrid, bh + 2 * offsetGrid);
+    ctx.rect(0, 0, c.width, c.height);
     ctx.fillStyle = "black";
     ctx.fill();
 
     ctx.beginPath();
-    ctx.rect(offsetGrid, offsetGrid, bw, bh);
+    ctx.rect(offsetGrid, offsetGrid, c.width - 2 * offsetGrid, c.height - 2 * offsetGrid);
     ctx.fillStyle = "white";
     ctx.fill();
 
-    for (let x = offsetGrid; x <= bw + offsetGrid; x += 40) {
+    for (let x = offsetGrid; x <= c.width - offsetGrid; x += 40) {
         ctx.moveTo(0.5 + x, offsetGrid);
-        ctx.lineTo(0.5 + x, bh + offsetGrid);
+        ctx.lineTo(0.5 + x, c.height - offsetGrid);
     }
 
     for (let x = offsetGrid; x <= bh + offsetGrid; x += 40) {
         ctx.moveTo(offsetGrid, 0.5 + x);
-        ctx.lineTo(offsetGrid + bw, 0.5 + x);
+        ctx.lineTo(c.width - offsetGrid, 0.5 + x);
     }
     ctx.strokeStyle = "black";
     ctx.stroke();
@@ -210,31 +266,23 @@ async function drawGrid()
 
     ctx.font = "10px Arial";
     ctx.fillStyle = "white";
-    ctx.fillText(gridBounds.mins.x, offsetGrid, bw + (1.8 * offsetGrid));
-    ctx.fillText(gridBounds.maxs.x, bw + offsetGrid, bw + (1.8 * offsetGrid));
-    ctx.fillText(gridBounds.mins.y, (0.2 * offsetGrid), bh + offsetGrid);
-    ctx.fillText(gridBounds.maxs.y, (0.2 * offsetGrid), 10 + (0.5 * offsetGrid));
+    ctx.fillText(gridBounds.mins.x, offsetGrid, c.height - 0.2 * offsetGrid);
+    ctx.fillText(gridBounds.maxs.x, c.width - offsetGrid, c.height - 0.2 * offsetGrid);
+    ctx.fillText(gridBounds.mins.y, 0.2 * offsetGrid, c.height - offsetGrid);
+    ctx.fillText(gridBounds.maxs.y, 0.2 * offsetGrid, offsetGrid);
 
     ctx.fillStyle = "red";
-    for (let x = 0; x <= 2; x += 1) {
+    for (let i = 0; i <= 2; i += 1) {
+        const anchorMapPos = worldSpaceToMapSpace(c, anchors[i].pos.x, anchors[i].pos.y);
         ctx.beginPath();
-        ctx.arc
-            (
-                offsetGrid + mapPosToGridWidth * anchors[x].pos.x,
-                bh + offsetGrid - mapPosToGridHeight * anchors[x].pos.y,
-                2, 0, 2 * Math.PI
-            );
+        ctx.arc(anchorMapPos.x, anchorMapPos.y, 2, 0, 2 * Math.PI);
         ctx.fill();
     }
 
     ctx.font = "10px Arial";
-    for (let x = 0; x <= 2; x += 1) {
-        ctx.fillText
-            (
-                anchors[x].name,
-                1.1 * offsetGrid + mapPosToGridWidth * anchors[x].pos.x,
-                (bh + offsetGrid / 2) - (mapPosToGridHeight * anchors[x].pos.y)
-            );
+    for (let i = 0; i <= 2; i += 1) {
+        const anchorMapPos = worldSpaceToMapSpace(c, anchors[i].pos.x, anchors[i].pos.y);
+        ctx.fillText(anchors[i].name, 0.2 * offsetGrid + anchorMapPos.x, -0.4 * offsetGrid + anchorMapPos.y);
     }
 }
 
@@ -242,6 +290,7 @@ async function updateInfo()
 {
     await updateAnchors();
     await updateGrid();
+    await updateAlgorithm();
     resetInfo();
 }
 
@@ -259,16 +308,3 @@ function init()
 }
 
 window.onload = init;
-
-// HUD Settings
-    // Counters
-    let timeForGhostUpdate = 0;
-    // Box width
-    let bw = 400;
-    // Box height
-    let bh = 400;
-    // Grid Offset (inside main white box)
-    let offsetGrid = 25;
-    // Tag Ghost Array
-    let tagGhostNo = 5;
-    let tagGhostArr = new Array(tagGhostNo);
