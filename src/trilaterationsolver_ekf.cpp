@@ -12,6 +12,9 @@ TrilaterationResult TrilaterationSolver_EKF::FindTagPosition(
 	const float* anchorDistances,
 	size_t numAnchors )
 {
+	if ( numAnchors < 3 )
+		return { mLastState.position, mLastState.velocity };
+
 	if ( !mDidInitialGuess )
 	{
 		// Initially, try to use the basic algorithm to find the location of the anchors

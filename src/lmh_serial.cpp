@@ -70,9 +70,14 @@ static void LMH_Serial_Init()
 		}
 
 		if ( evb_port.empty() )
+		{
 			std::this_thread::sleep_for( 1000ms );
+		}
 		else
+		{
 			LMH_Log( "Connected to tag on port %s\n", evb_port.c_str() );
+			break;
+		}
 	}
 
 	if ( !evb_port.empty() )

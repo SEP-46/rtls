@@ -12,9 +12,11 @@
 class TrilaterationSolver_Basic : public ITrilaterationSolver
 {
 public:
-	virtual TrilaterationResult FindTagPosition( Timestamp_t timestamp, const Vec3* anchorPositions, const float* anchorDistances, size_t numAnchors ) override;
+	const char* GetName() const override { return "basic"; }
 
-	virtual void SetBounds( const AABB& bounds ) override { mBounds = bounds; }
+	TrilaterationResult FindTagPosition( Timestamp_t timestamp, const Vec3* anchorPositions, const float* anchorDistances, size_t numAnchors ) override;
+
+	void SetBounds( const AABB& bounds ) override { mBounds = bounds; }
 
 private:
 	bool mHasLastPos;

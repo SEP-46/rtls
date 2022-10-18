@@ -50,10 +50,15 @@ struct TagConfig
 	std::string name;
 };
 
-struct Config
+struct AlgorithmConfig
 {
 	TrilaterationSolverType trilaterationType;
 	std::vector<OutputConfig> outputs;
+};
+
+struct Config
+{
+	std::vector<AlgorithmConfig> algorithms;
 	std::vector<AnchorConfig> anchors;
 	TagConfig tag;
 	AABB bounds;

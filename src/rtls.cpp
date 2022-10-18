@@ -47,12 +47,30 @@ void RTLS::Init( const Settings& settings )
 	}
 	else
 	{
-		cfg.trilaterationType = TrilaterationSolverType::BASIC;
+		// Add all algorithms, but only output on basic algorithm
+		{
+			AlgorithmConfig alg;
+			alg.trilaterationType = TrilaterationSolverType::BASIC;
 
-		OutputConfig output;
-		output.type = OutputType::WEBSOCKET;
-		output.websocket.port = 9002;
-		cfg.outputs.push_back( output );
+			OutputConfig output;
+			output.type = OutputType::WEBSOCKET;
+			output.websocket.port = 9002;
+			alg.outputs.push_back( output );
+
+			cfg.algorithms.push_back( std::move( alg ) );
+		}
+		{
+			AlgorithmConfig alg;
+			alg.trilaterationType = TrilaterationSolverType::EKF;
+
+			cfg.algorithms.push_back( std::move( alg ) );
+		}
+		{
+			AlgorithmConfig alg;
+			alg.trilaterationType = TrilaterationSolverType::BUILTIN;
+
+			cfg.algorithms.push_back( std::move( alg ) );
+		}
 
 		cfg.bounds.mins = { 0.0f, 0.0f, 0.0f };
 		cfg.bounds.maxs = { 10.0f, 10.0f, 10.0f };
@@ -86,44 +104,56 @@ bool RTLS::Run()
 	size_t numAnchors = measurements.size();
 	for ( size_t i = 0; i < measurements.size(); i++ )
 	{
+		auto anchors = mTag->GetAnchorList();
 		const AnchorDistanceMeasurement& measurement = measurements[i];
 		AnchorConfig* anchorConfig = FindAnchorConfigById( measurement.id );
 		AnchorConfig tagAnchorConfig;
 		if ( !anchorConfig )
-			anchorConfig = AddAnchorToConfig( measurement.id, "A" + std::to_string( measurement.id ), { 0.0f, 0.0f, 0.0f } );
+			anchorConfig = AddAnchorToConfig( measurement.id, "A" + std::to_string( measurement.id ), anchors.FindAnchorById( measurement.id )->GetPosition() );
 
 		anchorPositions[i] = anchorConfig->pos;
 		anchorDistances[i] = measurement.distance;
 	}
 	Timestamp_t timestamp = mTag->GetLastUpdatedTimestamp();
 
-	TrilaterationResult result = mTrilaterationSolver->FindTagPosition( timestamp, anchorPositions, anchorDistances, numAnchors );
-	
-	std::cout << "Tag position: " << result.position.x << ", " << result.position.y << ", " << result.position.z << '\n';
-	std::cout << "Tag velocity: " << result.velocity.x << ", " << result.velocity.y << ", " << result.velocity.z << '\n';
-
-	const Vec3& pos = result.position;
-	const Vec3& vel = result.velocity;
-
-	mVelocityOutputData.CalcVelocity( pos, timestamp );
-	mVelocityOutputData.TestPrintVelocity();
-
-	for ( const auto& output : mOutputInterfaces )
-	{
-		output->Write( pos, vel );
-	}
-
 	if ( mShouldLog )
 	{
-		LogEntry entry;
+		InputLogEntry entry;
 		entry.timestamp = timestamp;
-		entry.pos = pos;
 		entry.num_measurements = measurements.size();
 		for ( size_t i = 0; i < entry.num_measurements; i++ )
 		{
 			entry.measurements[i] = measurements[i];
 		}
-		mLog.push_back( entry );
+		mInputLog.push_back( entry );
+	}
+
+	for ( Algorithm& algorithm : mAlgorithms )
+	{
+		TrilaterationResult result = algorithm.solver->FindTagPosition( timestamp, anchorPositions, anchorDistances, numAnchors );
+
+		std::cout << "\nAlgorithm: " << algorithm.solver->GetName() << '\n';
+		std::cout << "Tag position: " << result.position.x << ", " << result.position.y << ", " << result.position.z << '\n';
+		std::cout << "Tag velocity: " << result.velocity.x << ", " << result.velocity.y << ", " << result.velocity.z << '\n';
+
+		const Vec3& pos = result.position;
+		const Vec3& vel = result.velocity;
+
+		mVelocityOutputData.CalcVelocity( pos, timestamp );
+		//mVelocityOutputData.TestPrintVelocity();
+
+		for ( const auto& output : algorithm.outputs )
+		{
+			output->Write( pos, vel );
+		}
+
+		if ( mShouldLog )
+		{
+			OutputLogEntry entry;
+			entry.timestamp = timestamp;
+			entry.pos = pos;
+			algorithm.log.push_back( entry );
+		}
 	}
 
 	return true;
@@ -179,38 +209,45 @@ void RTLS::ApplyConfig( const Config& cfg )
 {
 	mConfig = cfg;
 
-	if ( cfg.trilaterationType == TrilaterationSolverType::BASIC )
-		mTrilaterationSolver = std::make_unique<TrilaterationSolver_Basic>();
-	else if ( cfg.trilaterationType == TrilaterationSolverType::EKF )
-		mTrilaterationSolver = std::make_unique<TrilaterationSolver_EKF>();
-	else if ( cfg.trilaterationType == TrilaterationSolverType::BUILTIN )
-		mTrilaterationSolver = std::make_unique<TrilaterationSolver_Builtin>( mTag.get() );
-
-	for ( const OutputConfig& output : cfg.outputs )
+	for ( const AlgorithmConfig& algorithmCfg : cfg.algorithms )
 	{
-		std::unique_ptr<CommunicationInterface> interface;
-		if ( output.type == OutputType::UART )
+		Algorithm algorithm;
+
+		if ( algorithmCfg.trilaterationType == TrilaterationSolverType::BASIC )
+			algorithm.solver = std::make_unique<TrilaterationSolver_Basic>();
+		else if ( algorithmCfg.trilaterationType == TrilaterationSolverType::EKF )
+			algorithm.solver = std::make_unique<TrilaterationSolver_EKF>();
+		else if ( algorithmCfg.trilaterationType == TrilaterationSolverType::BUILTIN )
+			algorithm.solver = std::make_unique<TrilaterationSolver_Builtin>( mTag.get() );
+
+		for ( const OutputConfig& output : algorithmCfg.outputs )
 		{
-			if ( !output.uart.portName.empty() )
-				interface = std::make_unique<UartInterface>( output.uart.portName.c_str() );
-			else
-				interface = std::make_unique<UartInterface>( output.uart.portIndex );
-		}
-		else if ( output.type == OutputType::ANALOG )
-		{
-			auto analog = std::make_unique<AnalogInterface>();
-			analog->SetBounds( mConfig.bounds );
-			interface = std::move( analog );
-		}
-		else if ( output.type == OutputType::WEBSOCKET )
-		{
-			interface = std::make_unique<WebSocketInterface>( output.websocket.port );
+			std::unique_ptr<CommunicationInterface> interface;
+			if ( output.type == OutputType::UART )
+			{
+				if ( !output.uart.portName.empty() )
+					interface = std::make_unique<UartInterface>( output.uart.portName.c_str() );
+				else
+					interface = std::make_unique<UartInterface>( output.uart.portIndex );
+			}
+			else if ( output.type == OutputType::ANALOG )
+			{
+				auto analog = std::make_unique<AnalogInterface>();
+				analog->SetBounds( mConfig.bounds );
+				interface = std::move( analog );
+			}
+			else if ( output.type == OutputType::WEBSOCKET )
+			{
+				interface = std::make_unique<WebSocketInterface>( output.websocket.port );
+			}
+
+			algorithm.outputs.push_back( std::move( interface ) );
 		}
 
-		mOutputInterfaces.push_back( std::move( interface ) );
+		algorithm.solver->SetBounds( mConfig.bounds );
+
+		mAlgorithms.push_back( std::move( algorithm ) );
 	}
-
-	mTrilaterationSolver->SetBounds( mConfig.bounds );
 }
 
 void RTLS::SaveConfig()
@@ -247,18 +284,9 @@ void RTLS::SaveLog()
 	strftime( datetime, sizeof( datetime ), "%F_%H%M%S", now);
 
 	{
-		std::string filename = "output_log_"s + datetime + ".csv"s;
-		std::ofstream file( filename );
-		for ( const LogEntry& entry : mLog )
-		{
-			file << entry.timestamp << ',' << entry.pos.x << ',' << entry.pos.y << ',' << entry.pos.z << '\n';
-		}
-	}
-
-	{
 		std::string filename = "input_log_"s + datetime + ".csv"s;
 		std::ofstream file( filename );
-		for ( const LogEntry& entry : mLog )
+		for ( const InputLogEntry& entry : mInputLog )
 		{
 			file << entry.timestamp;
 			for ( size_t i = 0; i < entry.num_measurements; i++ )
@@ -268,16 +296,29 @@ void RTLS::SaveLog()
 			file << '\n';
 		}
 	}
+
+	for ( const Algorithm& algorithm : mAlgorithms )
+	{
+		std::string filename = "output_log_"s + algorithm.solver->GetName() + '_' + datetime + ".csv"s;
+		std::ofstream file( filename );
+		for ( const OutputLogEntry& entry : algorithm.log )
+		{
+			file << entry.timestamp << ',' << entry.pos.x << ',' << entry.pos.y << ',' << entry.pos.z << '\n';
+		}
+	}
 }
 
 void RTLS::SetBounds( const AABB& bounds )
 {
-	mTrilaterationSolver->SetBounds( bounds );
-	for ( std::unique_ptr<CommunicationInterface>& output : mOutputInterfaces )
+	for ( Algorithm& algorithm : mAlgorithms )
 	{
-		if ( auto* analog = dynamic_cast<AnalogInterface*>(output.get()) )
+		algorithm.solver->SetBounds( bounds );
+		for ( std::unique_ptr<CommunicationInterface>& output : algorithm.outputs )
 		{
-			analog->SetBounds( bounds );
+			if ( auto* analog = dynamic_cast<AnalogInterface*>( output.get() ) )
+			{
+				analog->SetBounds( bounds );
+			}
 		}
 	}
 
