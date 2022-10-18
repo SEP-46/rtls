@@ -54,7 +54,7 @@ private:
 	struct EKFSettings
 	{
 		float std_dev_accel = 0.5f;
-		float std_dev_measurement_noise = 0.1f;
+		float std_dev_measurement_noise = 0.025f;
 		float std_dev_position = 0.0f;
 		float std_dev_velocity = 0.0f;
 	};
