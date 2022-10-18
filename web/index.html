@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Real-time Location Systems</title>
+    <title>Real-Time Locating System</title>
     <meta charset="utf-8" />
     <meta name="description" content="This is the source code for our rtls program's web client" />
     <meta name="keywords" content="Swinburne University of Technology, SWE" />
@@ -20,25 +20,23 @@
 <!----------------------------------------------------------------------------------------------------------------------->
 
 <body id="TopOfPage">
-    <h1>Real-time Location Systems</h1>
-    <h1>Web Client</h1>
-    <img id="SwinburneLogo" src="https://seeklogo.com/images/S/swinburne-university-of-technology-logo-8DF0E18721-seeklogo.com.png" alt="SwinburneLogo">
+    <h1>Real-Time Locating System</h1>
+    <img id="SwinburneLogo" src="images/swinburne_logo.png" alt="SwinburneLogo">
+
     <div class="MainGridContainer">
         <!--Grid 1: Map grid-->
-        
-        <div class="Grid1"><h2>Site Map</h2><canvas id="myCanvas" width="450" height="450" style="border:1px solid #000000;"></canvas></div>
-
-        <!--Grid 2-->
-        <div class="Grid2">
-            <p>
+        <div id="LiveData">
+            <h2>Live Data</h2>
+            <canvas width="450" height="450" id="Visualisation"></canvas>
+            <br><br>
             <div id="TagOutputData">
-                <b>Tag Location:</b><output id="TagPosOutput"> {x, y, z} </output> (m)
+                <span>Tag Location: </span><output id="TagPosOutput">{x, y, z}</output> (m)
                 <br>
                 <br>
-                <b>Velocity: </b><output id="TagVelocityOutput"> {x, y, z} </output> (m/s)
+                <span>Velocity: </span><output id="TagVelocityOutput">{x, y, z}</output> (m/s)
                 <br>
                 <br>
-                <b>Speed: </b><output id="TagSpeedOutput"> xx.xx </output> (m/s)
+                <span>Speed: </span><output id="TagSpeedOutput">xx.xx</output> (m/s)
                 <br>
                 <br>
                 <!-- Direction <output id="TagDirectionOutput"> {theata, phi} </output> -->
@@ -46,71 +44,68 @@
         </div>
 
         <!--Grid 3: Input and Update Grid-->
-        <div class="Grid3">
-            <div>
-                <h2>Grid Area</h2>
-                <div class="GridArea">
-                    <div></div>
-                    <div>Min</div>
-                    <div>Max</div>
+        <div id="Configuration">
+            <h2>Configuration</h2>
+            <h3>Grid Area</h3>
+            <div class="GridArea">
+                <div></div>
+                <div>Min</div>
+                <div>Max</div>
 
-                    <div>X</div>
-                    <input id="BoundsMinX" type="number" placeholder="X Min" />
-                    <input id="BoundsMaxX" type="number" placeholder="X Max" />
+                <div>X</div>
+                <input id="BoundsMinX" type="number" placeholder="X Min" />
+                <input id="BoundsMaxX" type="number" placeholder="X Max" />
 
-                    <div>Y</div>
-                    <input id="BoundsMinY" type="number" placeholder="Y Min" />
-                    <input id="BoundsMaxY" type="number" placeholder="Y Max" />
+                <div>Y</div>
+                <input id="BoundsMinY" type="number" placeholder="Y Min" />
+                <input id="BoundsMaxY" type="number" placeholder="Y Max" />
 
-                    <div>Z</div>
-                    <input id="BoundsMinZ" type="number" placeholder="Z Min" />
-                    <input id="BoundsMaxZ" type="number" placeholder="Z Max" />
-                </div>
-                <hr>
-                <br>
-                <label for="A0NameInput">Anchor 1</label><br>
-                <input id="A0Id" type="hidden" />
-                <input id="A0NameInput" type="text" placeholder="Anchor 1 Name" />
-                <input id="A0XInput" type="number" placeholder="X" />
-                <input id="A0YInput" type="number" placeholder="Y" />
-                <input id="A0ZInput" type="number" placeholder="Z" />
-                <br>
-                <br />
-                <label for="A1NameInput">Anchor 2</label><br>
-                <input id="A1Id" type="hidden" />
-                <input id="A1NameInput" type="text" placeholder="Anchor 2 Name" />
-                <input id="A1XInput" type="number" placeholder="X" />
-                <input id="A1YInput" type="number" placeholder="Y" />
-                <input id="A1ZInput" type="number" placeholder="Z" />
-                <br>
-                <br>
-                <label for="A2NameInput">Anchor 3</label><br>
-                <input id="A2Id" type="hidden" />
-                <input id="A2NameInput" type="text" placeholder="Anchor 3 Name" />
-                <input id="A2XInput" type="number" placeholder="X" />
-                <input id="A2YInput" type="number" placeholder="Y" />
-                <input id="A2ZInput" type="number" placeholder="Z" />
-                <br>
-                <br>
-                <!--Buttons-->
-                <button class="Buttons" type="reset" id="ResetButton">Reset</button>
-                <button class="Buttons" type="button" id="UpdateButton">Update</button>
+                <div>Z</div>
+                <input id="BoundsMinZ" type="number" placeholder="Z Min" />
+                <input id="BoundsMaxZ" type="number" placeholder="Z Max" />
             </div>
+            <br>
+            <h3>Anchor Locations</h3>
+            <label for="A0NameInput">Anchor 1</label><br>
+            <input id="A0Id" type="hidden" />
+            <input id="A0NameInput" type="text" placeholder="Anchor 1 Name" />
+            <input id="A0XInput" type="number" placeholder="X" />
+            <input id="A0YInput" type="number" placeholder="Y" />
+            <input id="A0ZInput" type="number" placeholder="Z" />
+            <br>
+            <br>
+            <label for="A1NameInput">Anchor 2</label><br>
+            <input id="A1Id" type="hidden" />
+            <input id="A1NameInput" type="text" placeholder="Anchor 2 Name" />
+            <input id="A1XInput" type="number" placeholder="X" />
+            <input id="A1YInput" type="number" placeholder="Y" />
+            <input id="A1ZInput" type="number" placeholder="Z" />
+            <br>
+            <br>
+            <label for="A2NameInput">Anchor 3</label><br>
+            <input id="A2Id" type="hidden" />
+            <input id="A2NameInput" type="text" placeholder="Anchor 3 Name" />
+            <input id="A2XInput" type="number" placeholder="X" />
+            <input id="A2YInput" type="number" placeholder="Y" />
+            <input id="A2ZInput" type="number" placeholder="Z" />
+            <br>
+            <h3>Algorithm</h3>
+            <select name="algorithm" id="Algorithm">
+                <option value="basic">Basic</option>
+                <option value="ekf">EKF</option>
+                <option value="builtin">Built-in</option>
+            </select>
+            <br>
+            <br>
+            <!--Buttons-->
+            <button class="Buttons" type="reset" id="ResetButton">Reset</button>
+            <button class="Buttons" type="button" id="UpdateButton">Update</button>
         </div>
     </div>
 
-    <!--Legend-->
-    <h3>About this web client</h3>
-    <p>Anchors: A1, A2, A3...</p>
-    <p>tag = T0</p>
-    <p>Other related information</p>
-    <p><a href="manual.html">Manual</a></p>
-
     <hr>
     <footer>
-        <p>This is a property of Swinburne University of Technology as part of a final year capstone project</p>
-        <p>Real-time Location Systems| Final Year Project | Group 46 ©</p>
+        <p>Real-Time Locating System | Final Year Project | Group 46 ©</p>
     </footer>
-
 </body>
 </html>
