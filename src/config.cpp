@@ -175,6 +175,35 @@ static json SaveBounds( const AABB& data )
 	return bounds;
 }
 
+static AlgorithmConfig ParseAlgorithmConfig( const json& data )
+{
+	AlgorithmConfig algorithm;
+
+	algorithm.trilaterationType = ParseEnum( data["trilaterationType"], gTrilaterationSolverTypeEnum );
+	for ( const json& output : data["outputs"] )
+	{
+		algorithm.outputs.push_back( ParseOutputConfig( output ) );
+	}
+
+	return algorithm;
+}
+
+static json SaveAlgorithmConfig( const AlgorithmConfig& data )
+{
+	json algorithm;
+
+	algorithm["trilaterationType"] = SaveEnum( data.trilaterationType, gTrilaterationSolverTypeEnum );
+
+	json outputs = json::array();
+	for ( const OutputConfig& output : data.outputs )
+	{
+		outputs.push_back( SaveOutputConfig( output ) );
+	}
+	algorithm["outputs"] = outputs;
+
+	return algorithm;
+}
+
 Config LoadConfig( const char* filename )
 {
 	std::ifstream file( filename );
@@ -182,11 +211,9 @@ Config LoadConfig( const char* filename )
 
 	Config cfg;
 	
-	cfg.trilaterationType = ParseEnum( data["trilaterationType"], gTrilaterationSolverTypeEnum );
-
-	for ( const json& output : data["outputs"] )
+	for ( const json& algorithm : data["algorithms"] )
 	{
-		cfg.outputs.push_back( ParseOutputConfig( output ) );
+		cfg.algorithms.push_back( ParseAlgorithmConfig( algorithm ) );
 	}
 
 	for ( const json& anchor : data["anchors"] )
@@ -205,14 +232,12 @@ void SaveConfig( const Config& cfg, const char* filename )
 {
 	json data;
 
-	data["trilaterationType"] = SaveEnum( cfg.trilaterationType, gTrilaterationSolverTypeEnum );
-
-	json outputs = json::array();
-	for ( const OutputConfig& output : cfg.outputs )
+	json algorithms = json::array();
+	for ( const AlgorithmConfig& algorithm : cfg.algorithms )
 	{
-		outputs.push_back( SaveOutputConfig( output ) );
+		algorithms.push_back( SaveAlgorithmConfig( algorithm ) );
 	}
-	data["outputs"] = outputs;
+	data["algorithms"] = algorithms;
 
 	json anchors = json::array();
 	for ( const AnchorConfig& anchor : cfg.anchors )

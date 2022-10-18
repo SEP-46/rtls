@@ -50,19 +50,32 @@ private:
 
 private:
 	std::unique_ptr<Tag> mTag;
-	std::unique_ptr<ITrilaterationSolver> mTrilaterationSolver = nullptr;
-	std::vector<std::unique_ptr<CommunicationInterface>> mOutputInterfaces;
-	Config mConfig;
-	VelocityOutputData mVelocityOutputData;
-	
-	struct LogEntry
+
+	struct InputLogEntry
 	{
 		Timestamp_t timestamp;
-		Vec3 pos;
 		AnchorDistanceMeasurement measurements[MAX_ANCHORS];
 		size_t num_measurements;
 	};
-	std::vector<LogEntry> mLog;
+	std::vector<InputLogEntry> mInputLog;
+
+	struct OutputLogEntry
+	{
+		Timestamp_t timestamp;
+		Vec3 pos;
+	};
+
+	struct Algorithm
+	{
+		std::unique_ptr<ITrilaterationSolver> solver;
+		std::vector<std::unique_ptr<CommunicationInterface>> outputs;
+		std::vector<OutputLogEntry> log;
+	};
+	std::vector<Algorithm> mAlgorithms;
+
+	Config mConfig;
+	VelocityOutputData mVelocityOutputData;
+
 	bool mShouldLog = false;
 
 	bool mStopped = false;

@@ -12,6 +12,8 @@ public:
 		: mTag( tag )
 	{}
 
+	const char* GetName() const override { return "builtin"; }
+
 	TrilaterationResult FindTagPosition( Timestamp_t timestamp, const Vec3* anchorPositions, const float* anchorDistances, size_t numAnchors ) override
 	{
 		return TrilaterationResult( mTag->GetBuiltinPosition(), { 0.0f, 0.0f, 0.0f } );

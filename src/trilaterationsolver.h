@@ -23,6 +23,8 @@ struct TrilaterationResult
 class ITrilaterationSolver
 {
 public:
+	virtual const char* GetName() const = 0;
+
 	// Given the positions of anchors, and their distances to the tag, will return the tag location/velocity
 	virtual TrilaterationResult FindTagPosition( Timestamp_t timestamp, const Vec3* anchorPositions, const float* anchorDistances, size_t numAnchors ) = 0;
 
