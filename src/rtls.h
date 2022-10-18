@@ -39,6 +39,9 @@ public:
 	void SetBounds( const AABB& bounds );
 	const AABB& GetBounds() { return mConfig.bounds; }
 
+	std::string GetSelectedAlgorithm();
+	void SetSelectedAlgorithm( std::string name );
+
 private:
 	void ApplyConfig( const Config& cfg );
 	void SaveConfig();
@@ -72,6 +75,9 @@ private:
 		std::vector<OutputLogEntry> log;
 	};
 	std::vector<Algorithm> mAlgorithms;
+
+	std::unique_ptr<CommunicationInterface> mWebClientOutput;
+	std::string mSelectedAlgorithm;
 
 	Config mConfig;
 	VelocityOutputData mVelocityOutputData;

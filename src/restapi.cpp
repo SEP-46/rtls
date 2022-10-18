@@ -101,6 +101,25 @@ void StartWebServer(RTLS& rtls)
         res.set_content( response.dump(), "application/json" );
     } );
 
+    svr.Get("/algorithm", [&](const Request& req, Response& res) {
+        json algorithm;
+        algorithm["name"] = rtls.GetSelectedAlgorithm();
+
+        res.set_content( algorithm.dump(), "application/json" );
+    });
+
+    svr.Put( "/algorithm", [&]( const Request& req, Response& res ) {
+        json data = json::parse( req.body );
+
+        rtls.SetSelectedAlgorithm( data["name"] );
+
+        json response;
+        response["status"] = "success";
+        res.set_content( response.dump(), "application/json" );
+    } );
+
+
+
     svr.set_mount_point( "/", "../../web" );
 
     svr.listen("localhost", 80);    //setting port to 80
