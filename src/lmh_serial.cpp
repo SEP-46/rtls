@@ -37,7 +37,7 @@ static void LMH_Serial_Init()
 	g_serial->setStopbits( serial::stopbits_one );
 	g_serial->setFlowcontrol( serial::flowcontrol_none );
 
-	auto timeout = serial::Timeout::simpleTimeout( 100 );
+	auto timeout = serial::Timeout::simpleTimeout( 30 );
 	g_serial->setTimeout( timeout );
 
 	LMH_Log( "Waiting for connection to tag...\n" );
