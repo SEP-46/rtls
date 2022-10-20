@@ -38,11 +38,6 @@ AnalogInterface::~AnalogInterface()
 	gAnalog.close_dac();
 }
 
-bool AnalogInterface::Read(Vec3* data)
-{
-	return false;
-}
-
 bool AnalogInterface::Write(const Vec3& pos, const Vec3& vel)
 {
 	// Sets the voltage to match to location data
