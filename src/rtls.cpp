@@ -165,7 +165,8 @@ void RTLS::Stop()
 	mStopped = true;
 
 	SaveConfig();
-	SaveLog();
+	if ( mShouldLog )
+		SaveLog();
 }
 
 std::string RTLS::GetTagName() const
