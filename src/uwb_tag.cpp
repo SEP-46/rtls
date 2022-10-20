@@ -35,7 +35,8 @@ bool UWBTag::ReadDistanceData()
 	dwm_pos_t pos;
 	loc.p_pos = &pos;
 	int ret = dwm_loc_get( &loc );
-	assert( ret == RV_OK );
+	if ( ret != DWM_OK )
+		return false;
 	assert( loc.anchors.dist.cnt == loc.anchors.an_pos.cnt );
 
 	mBuiltinPos.x = pos.x / 1000.0f;
