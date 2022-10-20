@@ -24,7 +24,7 @@ BOOL WINAPI CtrlHandler( DWORD fdwCtrlType )
 #else
 #include <signal.h>
 
-void CtrlHandler( sig_t s )
+void CtrlHandler( int signum )
 {
 	rtls.Stop();
 }
