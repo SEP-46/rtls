@@ -85,6 +85,8 @@ The code here will be compiled into the `rtls-main` program.
 | trilaterationsolver_basic.h/.cpp   | Contains the implementation for the basic trilateration algorithm    |
 | trilaterationsolver_ekf.h/.cpp     | Contains the implementation for the EKF trilateration algorithm      |
 | trilaterationsolver_builtin.h/.cpp | Contains the implementation for the built-in trilateration algorithm |
+| analog_interface.h/.cpp            | Contains the code required to run the Raspberry Pi DAC HAT           |
+| velocity_output.h/.cpp             | Contains code that converts location data into a velocity output     |
 
 ### tests
 The `tests/` folder contains all of the unit tests, used to ensure the validity of the RTLS program. We use the `googletest` framework to implement unit testing in C++.
@@ -106,4 +108,12 @@ The `thirdparty/` folder contains all of the third-party dependencies that the R
 
 
 ### web
-TODO: Web folder description
+This folder contains all files and programs for the running of the web client.
+Languages include HTML, CSS, and JavaScript.
+Examples of things this web client does includes:
+ - <!-- TODO: Add stuff here -->
+
+<!-- TODO: Add anything else here? -->
+| File                               | Description                                                          |
+| ---------------------------------- | -------------------------------------------------------------------- |
+| scripts\output_data.js             | Contains code to initiate data interfaces and direct IO operations   |
