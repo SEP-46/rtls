@@ -79,14 +79,36 @@ This folder contains the core RTLS program, written in C++. Examples of things t
  - Implements multiple trilateration algorithms
 The code here will be compiled into the `rtls-main` program.
 
-| File                               | Description                                                          |
-| ---------------------------------- | -------------------------------------------------------------------- |
-| aabb.h                             | Contains utility class for an Axis-Aligned Bounding Box (AABB)       |
-| trilaterationsolver_basic.h/.cpp   | Contains the implementation for the basic trilateration algorithm    |
-| trilaterationsolver_ekf.h/.cpp     | Contains the implementation for the EKF trilateration algorithm      |
-| trilaterationsolver_builtin.h/.cpp | Contains the implementation for the built-in trilateration algorithm |
-| analog_interface.h/.cpp            | Contains the code required to run the Raspberry Pi DAC HAT           |
-| velocity_output.h/.cpp             | Contains code that converts location data into a velocity output     |
+| File                               | Description                                                                                              |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| aabb.h                             | Utility class for an Axis-Aligned Bounding Box (AABB)                                                    |
+| vector.h                           | Utility class for a 3D vector                                                                            |
+| matrix.h                           | Utility class for matrices of any dimensions                                                             |
+| mathlib.h                          | Utility file with miscellaneous math functions / types                                                   |
+| util.h/.cpp                        | Utility file with miscellaneous functions / types                                                        |
+| optparse.h                         | Utility class for parsing command line options                                                           |
+| config.h/.cpp                      | Code for loading/storing saved configuration of the RTLS (see config.json)                               |
+| settings.h/.cpp                    | Code for reading all of the command line options                                                         |
+| lmh_serial.h/.cpp                  | Low-level Module Handshake code for DWM API, handles sending/receiving raw data with tag                 |
+| main.cpp                           | Entry point for the RTLS program, handles initialisation of top-level systems and loops                  |
+| rtls.h/.cpp                        | Top level class for the RTLS system, handles the entire flow of getting distances and running algorithms |
+| communication_interface.h          | Interface for any output interface, which outputs the position of the tag                                |
+| analog_interface.h/.cpp            | The code for outputting tag position to analog output w/ Raspberry Pi DAC HAT                            |
+| uart_interface.h/.cpp              | The code for outputting tag position to UART interface                                                   |
+| websocket_interface.h/.cpp         | The code for outputting tag position to WebSocket interface                                              |
+| restapi.h/.cpp                     | Contains web server code, with all of the REST API endpoints                                             |
+| trilaterationsolver.h              | Common interface for all the trilateraion solvers / algorithms                                           |
+| trilaterationsolver_basic.h/.cpp   | Implementation for the basic trilateration algorithm                                                     |
+| trilaterationsolver_ekf.h/.cpp     | Implementation for the EKF trilateration algorithm                                                       |
+| trilaterationsolver_builtin.h/.cpp | Implementation for the built-in trilateration algorithm                                                  |
+| trilaterationsolver_builtin.h/.cpp | Implementation for the built-in trilateration algorithm                                                  |
+| velocity_output.h/.cpp             | Code that converts location data into a velocity output                                                  |
+| node.h                             | Contains definitions that are common to all "nodes" (tags/anchors)                                       |
+| uwb_anchor.h/.cpp                  | Utility class for keeping track of connected anchors and their measurements                              |
+| tag.h                              | Interface for a "tag" device that provides distance measurement data                                     |
+| uwb_tag.h/.cpp                     | Implemntation of the tag interface that uses the actual UWB device to get measurements                   |
+| mock_tag.h/.cpp                    | Implemntation of the tag interface that simulates a device moving in a circle                            |
+| mock_tag.h/.cpp                    | Implemntation of the tag interface that simulates a device moving in a circle                            |
 
 ### tests
 The `tests/` folder contains all of the unit tests, used to ensure the validity of the RTLS program. We use the `googletest` framework to implement unit testing in C++.
@@ -110,10 +132,9 @@ The `thirdparty/` folder contains all of the third-party dependencies that the R
 ### web
 This folder contains all files and programs for the running of the web client.
 Languages include HTML, CSS, and JavaScript.
-Examples of things this web client does includes:
- - <!-- TODO: Add stuff here -->
 
-<!-- TODO: Add anything else here? -->
 | File                               | Description                                                          |
 | ---------------------------------- | -------------------------------------------------------------------- |
+| index.html                         | Layout for the main page                                             |
+| css/styles.css                     | Styling for the main page                                            |
 | scripts\output_data.js             | Contains code to initiate data interfaces and direct IO operations   |
