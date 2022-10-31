@@ -134,15 +134,15 @@ TEST( TrilaterationEKF, MovingTagCaseWithNoise )
 		result = solver.FindTagPosition( time, anchors, distances, 3 );
 	}
 
-	// Make tag stationary for 5s
-	for ( int i = 0; i < 50; i++ )
+	// Make tag stationary for 0.5s
+	for ( int i = 0; i < 5; i++ )
 	{
 		time += 100;
 		result = solver.FindTagPosition( time, anchors, distances, 3 );
 	}
 
 	EXPECT_TRUE( result.valid );
-	EXPECT_TRUE( Vec3::CloseEnough( result.position, Vec3( 1.0f, 0.5f, 0.0f ), 0.01f ) ); // Using epsilon of 0.01, accurate within 1cm
+	EXPECT_TRUE( Vec3::CloseEnough( result.position, Vec3( 1.0f, 0.5f, 0.0f ), 0.05f ) ); // Using epsilon of 0.05, accurate within 5cm
 }
 
 TEST( TrilaterationEKF, NonIntersecting )
