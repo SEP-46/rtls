@@ -3,6 +3,7 @@
 #include <httplib.h>
 #include <json.hpp>
 
+#include <iostream>
 #include <sstream>
 
 void StartWebServer(RTLS& rtls)
@@ -122,5 +123,6 @@ void StartWebServer(RTLS& rtls)
 
     svr.set_mount_point( "/", "../../web" );
 
-    svr.listen("localhost", 80);    //setting port to 80
+    if ( !svr.listen( "0.0.0.0", 80 ) )
+        std::cerr << "WARNING: Failed to start web server on port 80\n";
 }
