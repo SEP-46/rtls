@@ -22,7 +22,7 @@ async function put(endpoint, data)
     return response.json();
 }
 
-let socket = new WebSocket("ws://localhost:9002");
+let socket = new WebSocket("ws://" + location.host + ":9002");
 socket.onopen = function()
 {
     console.log('socket conected');
